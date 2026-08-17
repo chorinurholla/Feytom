@@ -1,0 +1,28 @@
+# dependencies
+node_modules/
+
+# build output
+site/dist/
+site/.astro/
+build/
+
+# environment — real values never enter git
+.env
+.env.*
+!.env.example
+
+# transfer + housekeeping
+*.zip
+_to_delete/
+
+# macOS
+.DS_Store
+._*
+.Spotlight-V100
+.Trashes
+
+# editors
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp

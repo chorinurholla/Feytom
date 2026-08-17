@@ -1,0 +1,309 @@
+---
+/**
+ * Request-a-Quote form (§8.8).
+ *
+ * Three states, and which one renders is decided by configuration, never by
+ * hand (see src/lib/config.ts and scripts/launch-guard.mjs):
+ *
+ *   1. NO DESTINATION — the form renders in full so it can be reviewed, but
+ *      submission is off and the page says why. §8.8: "the form must not
+ *      pretend that submission succeeded". Nothing here pretends.
+ *   2. DESTINATION, NO APPROVED PRIVACY NOTICE — submission works, but only on
+ *      the review URL, and a visible banner says submissions are test-only.
+ *      The launch guard refuses this combination on a live build.
+ *   3. DESTINATION + APPROVED PRIVACY NOTICE — live, with the consent
+ *      checkbox §8.8 requires.
+ *
+ * Netlify Forms handles delivery: `data-netlify` makes Netlify intercept the
+ * POST, and `netlify-honeypot` points at the hidden field we already had, so
+ * bot submissions are rejected before storage rather than filling the inbox.
+ * Akismet filters the rest. Swapping to another destination later means
+ * changing this component's action and the env var — nothing else.
+ */
+import type { Product } from "../../lib/catalog";
+import {
+  FORM_ENABLED,
+  FORM_IS_TEST_ONLY,
+  QUOTE_DESTINATION,
+  PRIVACY_APPROVED,
+} from "../../lib/config";
+
+interface Props {
+  products: Product[];
+}
+const { products } = Astro.props;
+
+const isNetlify = QUOTE_DESTINATION === "netlify";
+---
+
+{
+  !FORM_ENABLED && (
+    <div class="notice notice--off" role="status">
+      <h2 class="t-eyebrow notice__h">This form is not yet accepting submissions</h2>
+      <p class="notice__body">
+        Feytom has not yet confirmed where quote requests should be delivered, and
+        the privacy notice has not been approved. Rather than accept your details
+        and risk losing them, the form below is shown for review only — sending is
+        switched off until a destination is in place.
+      </p>
+      <p class="t-small notice__meta">
+        For the developer: set <code>PUBLIC_QUOTE_DESTINATION</code> and
+        <code>PUBLIC_PRIVACY_APPROVED</code>. See <code>.env.example</code>.
+      </p>
+    </div>
+  )
+}
+
+{
+  FORM_IS_TEST_ONLY && (
+    <div class="notice notice--test" role="status">
+      <h2 class="t-eyebrow notice__h">Test environment — do not send real enquiries</h2>
+      <p class="notice__body">
+        This form is wired up and will deliver, but Feytom's privacy notice has not
+        been approved yet, so it is enabled for testing only. Anything submitted
+        here should be test data. The form cannot be enabled in this state on the
+        public site.
+      </p>
+    </div>
+  )
+}
+
+<form
+  class="qform"
+  name="quote-request"
+  method="post"
+  action={FORM_ENABLED ? "/request-a-quote/sent/" : undefined}
+  data-netlify={isNetlify && FORM_ENABLED ? "true" : undefined}
+  netlify-honeypot={isNetlify && FORM_ENABLED ? "company_website" : undefined}
+  aria-describedby={!FORM_ENABLED ? "qform-disabled" : undefined}
+>
+  {/* Netlify identifies the form by this value, so it must survive the POST. */}
+  <input type="hidden" name="form-name" value="quote-request" />
+
+  <fieldset class="qform__set" disabled={!FORM_ENABLED}>
+    <legend class="sr-only">Your details</legend>
+
+    <div class="field">
+      <label class="field__label" for="name">Name <span class="req">(required)</span></label>
+      <input class="field__input" id="name" name="name" type="text" autocomplete="name" required />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="company">Company <span class="req">(required)</span></label>
+      <input class="field__input" id="company" name="company" type="text" autocomplete="organization" required />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="email">Work email <span class="req">(required)</span></label>
+      <input class="field__input" id="email" name="email" type="email" autocomplete="email" required />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="phone">Phone <span class="opt">(optional)</span></label>
+      <input class="field__input" id="phone" name="phone" type="tel" autocomplete="tel" />
+    </div>
+  </fieldset>
+
+  <fieldset class="qform__set" disabled={!FORM_ENABLED}>
+    <legend class="sr-only">What you need</legend>
+
+    <div class="field field--wide">
+      <label class="field__label" for="product">Product <span class="req">(required)</span></label>
+      <select class="field__input" id="product" name="product" required>
+        <option value="">Select a product</option>
+        {products.map((p) => (
+          <option value={p.data.slug}>{p.data.name} — {p.data.sizeSummary}</option>
+        ))}
+        <option value="multiple">Multiple products / other requirement</option>
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="quantity">Quantity <span class="req">(required)</span></label>
+      <input class="field__input" id="quantity" name="quantity" type="text" required
+        aria-describedby="quantity-help" />
+      <p class="field__help" id="quantity-help">
+        Rolls, bags, drums or total length — whichever you order in.
+      </p>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="location">
+        Delivery ZIP code, or city and state <span class="req">(required)</span>
+      </label>
+      <input class="field__input" id="location" name="location" type="text"
+        autocomplete="postal-code" required />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="neededBy">Requested date <span class="opt">(optional)</span></label>
+      <input class="field__input" id="neededBy" name="neededBy" type="date"
+        aria-describedby="neededBy-help" />
+      <p class="field__help" id="neededBy-help">
+        The date you would like it by. This is a request, not a confirmed
+        delivery date.
+      </p>
+    </div>
+
+    <div class="field field--wide">
+      <label class="field__label" for="notes">Requirements or notes <span class="opt">(optional)</span></label>
+      <textarea class="field__input" id="notes" name="notes" rows="4"></textarea>
+    </div>
+  </fieldset>
+
+  {/* Consent (§8.8). Rendered only once there is an approved privacy notice to
+      consent to — a checkbox pointing at an empty page would be theatre. */}
+  {
+    PRIVACY_APPROVED && (
+      <div class="consent">
+        <input class="consent__box" id="consent" name="consent" type="checkbox" required
+          aria-describedby="consent-help" />
+        <div>
+          <label class="consent__label" for="consent">
+            I agree to Feytom contacting me about this request.
+            <span class="req">(required)</span>
+          </label>
+          <p class="field__help" id="consent-help">
+            We use your details to answer this enquiry. See the
+            <a href="/privacy/" class="link">privacy notice</a>.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
+  {/* Honeypot — hidden from sight and from assistive technology, never a
+      "leave this blank" instruction that confuses real users. Netlify rejects
+      any submission where it is filled. */}
+  <div class="hp" aria-hidden="true">
+    <label for="company_website">Company website</label>
+    <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="qform__submit">
+    <button class="btn btn--primary" type="submit" disabled={!FORM_ENABLED}>
+      Send Request
+    </button>
+    {
+      !FORM_ENABLED && (
+        <p class="t-small qform__disabled" id="qform-disabled">
+          Disabled until a delivery destination and privacy notice are approved.
+        </p>
+      )
+    }
+  </div>
+</form>
+
+<script>
+  /* Pre-select the product from ?product=<slug> so a product-page CTA carries
+     its context into the form (§16). Progressive: without JS the visitor simply
+     picks from the list. */
+  const params = new URLSearchParams(window.location.search);
+  const slug = params.get("product");
+  const select = document.getElementById("product") as HTMLSelectElement | null;
+  if (slug && select) {
+    const match = Array.from(select.options).find((o) => o.value === slug);
+    if (match) select.value = slug;
+  }
+</script>
+
+<style>
+  .notice {
+    border: var(--rule) solid var(--color-border);
+    border-inline-start: var(--rule-heavy) solid var(--color-pending);
+    background: var(--color-bg-subtle);
+    padding: var(--space-2);
+    margin-block-end: var(--space-4);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .notice--test {
+    border-inline-start-color: var(--color-error);
+  }
+  .notice__h { color: var(--color-pending); margin: 0; }
+  .notice--test .notice__h { color: var(--color-error); }
+  .notice__body { margin: 0; max-width: var(--measure); }
+  .notice__meta { margin: 0; color: var(--color-text-muted); }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    font-size: 0.9em;
+    /* Long env-var names must wrap, or they force horizontal scroll at 320px. */
+    overflow-wrap: anywhere;
+    background: var(--color-bg);
+    border: var(--rule) solid var(--color-border);
+    padding: 0.1em 0.35em;
+    border-radius: var(--radius-sm);
+  }
+
+  .qform { display: flex; flex-direction: column; gap: var(--space-4); max-width: 46rem; }
+  .qform__set {
+    border: 0; padding: 0; margin: 0;
+    display: grid; gap: var(--space-2); grid-template-columns: minmax(0, 1fr);
+  }
+  .qform__set > * { min-width: 0; }
+  @media (min-width: 40em) {
+    .qform__set { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .field--wide { grid-column: 1 / -1; }
+  }
+  /* The point of showing a disabled form is that it can be REVIEWED, so labels
+     and help text stay at full contrast. Only the controls read as inactive.
+     (Disabled controls are exempt from SC 1.4.3, but the surrounding copy is
+     not, and dimming the whole fieldset would have dimmed that too.) */
+  .qform__set[disabled] .field__input {
+    background: var(--color-bg-subtle);
+    border-style: dashed;
+    color: var(--color-text-muted);
+  }
+
+  .field { display: flex; flex-direction: column; gap: var(--space-0-5); }
+  /* Labels stay visible — placeholders are not labels (§13). */
+  .field__label { font-weight: 600; font-size: var(--text-sm); }
+  .req { color: var(--color-text-muted); font-weight: 400; }
+  .opt { color: var(--color-text-muted); font-weight: 400; }
+  .field__input {
+    font: inherit;
+    /* A <select> is intrinsically as wide as its longest option; without this
+       the product list forces the whole column past a 320px viewport. */
+    width: 100%;
+    min-width: 0;
+    text-overflow: ellipsis;
+    min-height: 48px;
+    padding: var(--space-1) var(--space-1-5);
+    color: var(--color-text);
+    background: var(--color-bg);
+    /* 3:1 boundary — the decorative hairline token would fail SC 1.4.11 here. */
+    border: var(--rule) solid var(--color-border-strong);
+    border-radius: var(--radius);
+  }
+  textarea.field__input { min-height: 7rem; padding-block: var(--space-1); }
+  .field__input:hover:enabled { border-color: var(--color-heading); }
+  .field__help { margin: 0; font-size: var(--text-sm); color: var(--color-text-muted); }
+
+  .consent {
+    display: flex;
+    gap: var(--space-1-5);
+    align-items: flex-start;
+    max-width: var(--measure);
+  }
+  .consent__box {
+    /* 24px box inside a 44px hit area — a 16px default is not a touch target. */
+    width: 24px;
+    height: 24px;
+    margin: 10px 0;
+    flex: 0 0 auto;
+    accent-color: var(--color-heading);
+  }
+  .consent__label { font-weight: 600; font-size: var(--text-sm); display: block; }
+
+  .hp {
+    position: absolute;
+    width: 1px; height: 1px;
+    overflow: hidden; clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .qform__submit { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1-5); }
+  .qform__disabled { margin: 0; color: var(--color-text-muted); }
+</style>

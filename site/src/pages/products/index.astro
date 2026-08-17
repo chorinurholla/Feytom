@@ -1,0 +1,248 @@
+---
+/**
+ * Catalog index (§8.2). D5: this IS the category page at launch — with one
+ * primary category, /products and /products/cargo-securement would be
+ * near-identical, so the latter redirects here.
+ *
+ * D7b: family "pages" are crawlable filtered states of this page. The filter is
+ * a list of real links with query params, so it works with JavaScript disabled
+ * and each state is shareable. Empty filters are never rendered (§8.2).
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/global/Breadcrumbs.astro";
+import SectionIntro from "../../components/content/SectionIntro.astro";
+import ProductCard from "../../components/product/ProductCard.astro";
+import SafetyNote from "../../components/content/SafetyNote.astro";
+import QuoteCtaPanel from "../../components/content/QuoteCtaPanel.astro";
+import {
+  getActiveProducts,
+  getPopulatedFamilies,
+  CATEGORY,
+  CATEGORY_INTRO,
+} from "../../lib/catalog";
+import { ORGANIZATION, breadcrumbList } from "../../lib/seo";
+
+const [products, families] = await Promise.all([
+  getActiveProducts(),
+  getPopulatedFamilies(),
+]);
+
+const crumbs = [
+  { label: "Home", href: "/" },
+  { label: "Products" },
+];
+---
+
+<BaseLayout
+  title="Cargo Securement Products | Feytom"
+  description="Chains, lashing belts and industrial rope for transportation, warehouse and material-handling operations. Grade, diameter, length and packaging on every product. Request bulk pricing."
+  current="/products"
+  schema={[ORGANIZATION, breadcrumbList(crumbs)]}
+>
+  <div class="container">
+    <Breadcrumbs crumbs={crumbs} />
+  </div>
+
+  <section class="section section--tight-top catalog" aria-labelledby="catalog-h">
+    <div class="container">
+      <SectionIntro
+        id="catalog-h"
+        level={1}
+        eyebrow={CATEGORY}
+        heading="Cargo Securement"
+        body={CATEGORY_INTRO}
+      />
+
+      {/* Progressive filter: real links, not buttons. Works with no JS, each
+          state is shareable, and the "All" state is the canonical page. */}
+      <nav class="filter" aria-label="Filter by product family">
+        <h2 class="t-eyebrow filter__label" id="filter-h">Product family</h2>
+        <ul class="filter__list" aria-labelledby="filter-h">
+          <li>
+            <a href="/products/" class="filter__chip" data-family="">
+              All <span class="filter__count t-numeric">{products.length}</span>
+            </a>
+          </li>
+          {
+            families.map(({ family, products: inFamily }) => (
+              <li>
+                <a
+                  href={`/products/?family=${family.data.slug}`}
+                  class="filter__chip"
+                  data-family={family.data.slug}
+                >
+                  {family.data.name}
+                  <span class="filter__count t-numeric">{inFamily.length}</span>
+                </a>
+              </li>
+            ))
+          }
+        </ul>
+      </nav>
+
+      <p class="filter__status t-small" role="status" aria-live="polite" id="filter-status"></p>
+
+      <ul class="catalog__grid grid grid--3">
+        {
+          products.map((p) => (
+            <li data-family={p.data.productFamily.id}>
+              <ProductCard product={p} level={3} />
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="catalog__families">
+        {
+          families.map(({ family }) => (
+            <details class="fhelp" data-family={family.data.slug}>
+              <summary class="fhelp__summary">
+                Choosing {family.data.name.toLowerCase()}
+              </summary>
+              <p class="fhelp__body">{family.data.decisionHelp}</p>
+            </details>
+          ))
+        }
+      </div>
+
+      <div class="catalog__safety">
+        <SafetyNote />
+      </div>
+    </div>
+  </section>
+
+  <QuoteCtaPanel />
+</BaseLayout>
+
+<script>
+  /* Enhancement only. Without JS, every filter link is a normal navigation to a
+     crawlable URL and the full grid renders. With JS we filter in place and
+     keep the URL in step, so the state stays shareable. */
+  const params = new URLSearchParams(window.location.search);
+  const chips = document.querySelectorAll<HTMLAnchorElement>(".filter__chip");
+  const items = document.querySelectorAll<HTMLLIElement>(".catalog__grid > li");
+  const helps = document.querySelectorAll<HTMLDetailsElement>(".fhelp");
+  const status = document.getElementById("filter-status");
+
+  function apply(family: string, pushState: boolean) {
+    let shown = 0;
+    items.forEach((li) => {
+      const match = !family || li.dataset.family === family;
+      li.hidden = !match;
+      if (match) shown++;
+    });
+    chips.forEach((c) => {
+      const on = (c.dataset.family ?? "") === family;
+      c.classList.toggle("is-active", on);
+      if (on) c.setAttribute("aria-current", "true");
+      else c.removeAttribute("aria-current");
+    });
+    helps.forEach((h) => {
+      h.hidden = !!family && h.dataset.family !== family;
+    });
+    if (status) {
+      status.textContent = family
+        ? `Showing ${shown} of ${items.length} products.`
+        : "";
+    }
+    if (pushState) {
+      const url = family ? `?family=${family}` : window.location.pathname;
+      history.pushState({ family }, "", url);
+    }
+  }
+
+  chips.forEach((chip) =>
+    chip.addEventListener("click", (e) => {
+      e.preventDefault();
+      apply(chip.dataset.family ?? "", true);
+    })
+  );
+  window.addEventListener("popstate", () => {
+    const p = new URLSearchParams(window.location.search);
+    apply(p.get("family") ?? "", false);
+  });
+  apply(params.get("family") ?? "", false);
+</script>
+
+<style>
+  .filter {
+    margin-block-end: var(--space-2);
+  }
+  .filter__label {
+    color: var(--color-text-muted);
+    margin-block-end: var(--space-1);
+  }
+  .filter__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1);
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .filter__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    min-height: 44px;
+    padding: 0 var(--space-2);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-heading);
+    background: var(--color-bg);
+    border: var(--rule) solid var(--color-border-strong);
+    border-radius: var(--radius);
+  }
+  .filter__chip:hover {
+    border-color: var(--color-heading);
+    background: var(--color-bg-subtle);
+  }
+  /* Active state is carried by fill AND a heavy underline bar, not colour
+     alone (§13). aria-current carries it for assistive tech. */
+  .filter__chip.is-active {
+    background: var(--color-heading);
+    color: var(--color-text-inverse);
+    border-color: var(--color-heading);
+    box-shadow: inset 0 -3px 0 var(--color-action);
+  }
+  .filter__count {
+    font-size: var(--text-sm);
+    font-weight: 400;
+    opacity: 0.75;
+  }
+  .filter__status {
+    margin: 0 0 var(--space-3);
+    color: var(--color-text-muted);
+    min-height: 1.5em;
+  }
+  .catalog__grid {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .catalog__families {
+    margin-block-start: var(--space-6);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    max-width: var(--measure);
+  }
+  .fhelp {
+    border-block-start: var(--rule) solid var(--color-border);
+  }
+  .fhelp__summary {
+    cursor: pointer;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: var(--color-heading);
+  }
+  .fhelp__body {
+    margin: 0 0 var(--space-2);
+    color: var(--color-text-muted);
+  }
+  .catalog__safety {
+    margin-block-start: var(--space-6);
+  }
+</style>

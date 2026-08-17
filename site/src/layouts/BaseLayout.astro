@@ -1,0 +1,88 @@
+---
+import "../styles/tokens.css";
+import "../styles/typography.css";
+import "../styles/global.css";
+import Header from "../components/global/Header.astro";
+import Footer from "../components/global/Footer.astro";
+import { IS_INDEXABLE, SITE_STAGE } from "../lib/config";
+
+interface Props {
+  title: string;
+  description: string;
+  current?: string;
+  /** Legal scaffolds and internal states stay out of the index (§12). */
+  noindex?: boolean;
+  /** JSON-LD graph nodes for this page. Never includes Offer, price,
+      availability, rating or review — none is supported by real data (§12). */
+  schema?: Record<string, unknown>[];
+}
+const { title, description, current, noindex = false, schema = [] } = Astro.props;
+
+/* On the review URL EVERY page is noindex, whatever the page asked for (§12:
+   staging environments must not be indexed). robots.txt disallows all as well —
+   two independent controls, because one of them will eventually be forgotten. */
+const blockIndexing = noindex || !IS_INDEXABLE;
+
+/* Canonical links and the sitemap are blocked on the domain decision (§19:
+   "Do not guess a public URL"). astro.config.mjs leaves `site` unset, so
+   Astro.site is undefined and no canonical is emitted rather than a wrong one. */
+const canonical = Astro.site
+  ? new URL(Astro.url.pathname, Astro.site).href
+  : undefined;
+
+const graph =
+  schema.length > 0
+    ? { "@context": "https://schema.org", "@graph": schema }
+    : null;
+---
+
+<!doctype html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    {canonical && <link rel="canonical" href={canonical} />}
+    {blockIndexing && <meta name="robots" content="noindex, nofollow" />}
+    {SITE_STAGE === "review" && <meta name="feytom-stage" content="review" />}
+    <meta name="theme-color" content="#0B1C2E" />
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Feytom" />
+
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/barlow-condensed-latin-700-normal.woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href="/fonts/inter-latin-400-normal.woff2"
+      crossorigin
+    />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    {graph && <script type="application/ld+json" set:html={JSON.stringify(graph)} />}
+
+    <!-- Marks the document before first paint so JS-only affordances (the
+         collapsed nav) never flash. Everything still works without this. -->
+    <script is:inline>
+      document.documentElement.classList.add("js");
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Header current={current} />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

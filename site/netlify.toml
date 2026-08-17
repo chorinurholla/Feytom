@@ -1,0 +1,55 @@
+# Feytom — Netlify configuration.
+
+[build]
+  base    = "site"
+  command = "npm run build"
+  publish = "site/dist"
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# Production context. Stage is set in the Netlify UI (Environment variables) so
+# that flipping review -> live does not require a commit.
+[context.production.environment]
+  PUBLIC_SITE_STAGE = "review"
+
+# Branch and PR deploys are never live, whatever production is set to.
+[context.deploy-preview.environment]
+  PUBLIC_SITE_STAGE = "review"
+[context.branch-deploy.environment]
+  PUBLIC_SITE_STAGE = "review"
+
+# Defence in depth: a header as well as the meta tag and robots.txt. Netlify
+# only applies this to non-production contexts; production indexing is governed
+# by PUBLIC_SITE_STAGE.
+[[context.deploy-preview.headers]]
+  for = "/*"
+  [context.deploy-preview.headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+[[context.branch-deploy.headers]]
+  for = "/*"
+  [context.branch-deploy.headers.values]
+    X-Robots-Tag = "noindex, nofollow"
+
+# Security headers. No third-party origins are used, so the CSP can be strict:
+# self only, plus the inline styles Astro emits for scoped component CSS.
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Frame-Options = "DENY"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+    Content-Security-Policy = "default-src 'self'; img-src 'self' data:; style-src 'self' 'unsafe-inline'; font-src 'self'; script-src 'self' 'unsafe-inline'; form-action 'self'; frame-ancestors 'none'; base-uri 'self'"
+
+# Fonts are content-hashed by name and never change — cache them hard.
+[[headers]]
+  for = "/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

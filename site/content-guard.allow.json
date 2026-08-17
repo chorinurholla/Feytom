@@ -1,0 +1,96 @@
+{
+  "_comment": "Every exception to the content guard, with a written reason. Reviewed at each milestone. An entry here is a deliberate decision, not a bypass. The pattern across all of them is the same: these are NEGATIVE uses — the site saying it will not publish a claim, or the Appendix B safeguard warning the reader to verify. A positive claim would not qualify.",
+  "_reviewed": "M2/M4, 16 August 2026",
+  "exceptions": [
+    {
+      "file": "src/lib/safety.ts",
+      "rule": "wll",
+      "reason": "Appendix B safety note, verbatim and mandated. It instructs the reader to confirm working-load limits against manufacturer documentation — the opposite of asserting one."
+    },
+    {
+      "file": "src/lib/safety.ts",
+      "rule": "certified",
+      "reason": "Appendix B safety note, verbatim. States that a marking may not establish a CERTIFIED working-load limit. A warning, not a claim."
+    },
+    {
+      "file": "src/content.config.ts",
+      "rule": "certified",
+      "reason": "The schema field name `certifications`, locked to an empty array. Its presence in the source is the lock that PREVENTS publishing a certification."
+    },
+    {
+      "file": "src/content/products/cargo-lashing-belt-2in-328ft.yaml",
+      "rule": "wll",
+      "reason": "safety.withheldClaims audit record: states the 3T marking is NOT presented as a working-load limit. Internal record, never rendered to a page."
+    },
+    {
+      "file": "src/content/products/cargo-lashing-belt-2in-328ft.yaml",
+      "rule": "certified",
+      "reason": "safety.withheldClaims audit record, as above."
+    },
+    {
+      "file": "src/content/products/grade-70-truckers-chain-5-16in-20ft.yaml",
+      "rule": "wll",
+      "reason": "safety.withheldClaims audit record listing what is withheld pending manufacturer documentation. Never rendered."
+    },
+    {
+      "file": "src/content/products/grade-70-truckers-chain-5-16in-20ft.yaml",
+      "rule": "breaking-strength",
+      "reason": "safety.withheldClaims audit record, as above."
+    },
+    {
+      "file": "src/content/products/grade-43-high-test-chain-5-16in-551ft.yaml",
+      "rule": "wll",
+      "reason": "safety.withheldClaims audit record, as above."
+    },
+    {
+      "file": "src/content/products/grade-43-high-test-chain-5-16in-551ft.yaml",
+      "rule": "breaking-strength",
+      "reason": "safety.withheldClaims audit record, as above."
+    },
+    {
+      "file": "src/content/products/heavy-duty-pe-rope-3-8in-502ft.yaml",
+      "rule": "wll",
+      "reason": "safety.withheldClaims audit record, as above."
+    },
+    {
+      "file": "src/content/products/heavy-duty-pe-rope-3-8in-502ft.yaml",
+      "rule": "breaking-strength",
+      "reason": "safety.withheldClaims audit record: tensile strength is withheld pending documentation."
+    },
+    {
+      "file": "src/content/products/heavy-duty-pe-rope-3-8in-502ft.yaml",
+      "rule": "certified",
+      "reason": "safety.withheldClaims audit record: marine certification is withheld; 'marine use' is published as a possible application only."
+    },
+    {
+      "file": "src/pages/product-safety.astro",
+      "rule": "wll",
+      "reason": "The Product Safety page's whole purpose is to name what Feytom withholds and why (§8.6). Every occurrence is inside a sentence stating the claim is NOT published until documented."
+    },
+    {
+      "file": "src/pages/product-safety.astro",
+      "rule": "breaking-strength",
+      "reason": "As above — named in the list of withheld claims."
+    },
+    {
+      "file": "src/pages/product-safety.astro",
+      "rule": "rated-capacity",
+      "reason": "As above — named in the list of withheld claims."
+    },
+    {
+      "file": "src/pages/product-safety.astro",
+      "rule": "certified",
+      "reason": "As above. Includes the sentence 'a marking is not, on its own, a certified rating' — a denial, not an assertion."
+    },
+    {
+      "file": "src/pages/about.astro",
+      "rule": "wll",
+      "reason": "The 'What we do not claim' list: 'We do not publish working-load limits or certifications we have not verified.'"
+    },
+    {
+      "file": "src/pages/about.astro",
+      "rule": "certified",
+      "reason": "As above, plus a sentence explaining that a certification needing manufacturer documentation is withheld until it is in hand."
+    }
+  ]
+}

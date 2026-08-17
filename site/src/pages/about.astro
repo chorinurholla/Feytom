@@ -1,0 +1,134 @@
+---
+/**
+ * About (§8.7). Legal identity, pronunciation, nationwide focus, purpose,
+ * approach, service principles.
+ *
+ * Deliberately absent: founding year, founder story, employee count, warehouse
+ * network, owned manufacturing. §8.7 forbids inventing any of them and none has
+ * been supplied.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/global/Breadcrumbs.astro";
+import SectionIntro from "../components/content/SectionIntro.astro";
+import ValuePillars from "../components/content/ValuePillars.astro";
+import QuoteCtaPanel from "../components/content/QuoteCtaPanel.astro";
+import { ORGANIZATION, breadcrumbList } from "../lib/seo";
+const crumbs = [{ label: "Home", href: "/" }, { label: "About" }];
+---
+<BaseLayout
+  title="About Feytom | Cargo Securement & Industrial Supply"
+  description="Feytom LLC is a United States supplier of cargo-securement, warehouse and industrial products, focused on dependable sourcing, clear product information and straightforward service."
+  current="/about"
+  schema={[ORGANIZATION, breadcrumbList(crumbs)]}
+>
+  <div class="container"><Breadcrumbs crumbs={crumbs} /></div>
+
+  <section class="section section--tight-top" aria-labelledby="about-h">
+    <div class="container about">
+      <SectionIntro
+        id="about-h" level={1}
+        eyebrow="About"
+        heading="Built for the work, not for the brochure"
+        body="Feytom supplies chains, lashing belts, ropes and industrial essentials for transportation, warehouse and material-handling operations across the United States."
+      />
+
+      <div class="about__cols">
+        <div class="about__main">
+          <h2 class="t-h2">Why Feytom exists</h2>
+          <p class="t-body">
+            Sourcing securement supplies is harder than it should be. Listings
+            leave out the grade. Sizes are vague. Quantities are unclear until
+            someone calls you back. Feytom exists to make dependable
+            cargo-securement and industrial products easier for United States
+            transportation, warehouse and material-handling operators to source
+            and understand.
+          </p>
+
+          <h2 class="t-h2">How we work</h2>
+          <p class="t-body">
+            We publish what we can confirm and we say clearly what we cannot. Every
+            product page states the dimensions, material, grade and packaging we
+            have verified. Where a load limit, a certification or a performance
+            figure would need manufacturer documentation, it is not published until
+            that documentation is in hand — even when a competitor would print it.
+          </p>
+          <p class="t-body">
+            That is a deliberate trade. It means our pages sometimes say less than
+            others. It also means what they say can be relied on.
+          </p>
+
+          <h2 class="t-h2">What we do not claim</h2>
+          <ul class="about__list">
+            <li>We do not publish working-load limits or certifications we have not verified.</li>
+            <li>We do not promise delivery timescales we have not committed to.</li>
+            <li>We do not present a product marking as a rating.</li>
+            <li>We do not manufacture the products we supply.</li>
+          </ul>
+        </div>
+
+        <aside class="about__facts" aria-labelledby="facts-h">
+          <h2 id="facts-h" class="t-eyebrow about__facts-h">Company</h2>
+          <dl class="speclist">
+            <div class="speclist__row">
+              <dt class="speclist__label">Registered name</dt>
+              <dd class="speclist__value">Feytom LLC</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Trading as</dt>
+              <dd class="speclist__value">Feytom</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Pronounced</dt>
+              <dd class="speclist__value">Fei-tom</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Service area</dt>
+              <dd class="speclist__value">United States, nationwide</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Customers</dt>
+              <dd class="speclist__value">Business and trade</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Supplies</dt>
+              <dd class="speclist__value">Cargo securement, warehouse and industrial products</dd>
+            </div>
+          </dl>
+          <p class="t-small about__facts-note">
+            Telephone, email and any public address will appear here once verified.
+            Until then, the quote form is the route to us.
+          </p>
+        </aside>
+      </div>
+
+      <div class="about__pillars">
+        <h2 class="t-h2 about__pillars-h">Our service principles</h2>
+        <ValuePillars />
+      </div>
+    </div>
+  </section>
+
+  <QuoteCtaPanel />
+</BaseLayout>
+
+<style>
+  .about__cols { display: grid; gap: var(--space-6); grid-template-columns: 1fr; }
+  @media (min-width: 62em) {
+    .about__cols { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+  }
+  .about__main { display: flex; flex-direction: column; gap: var(--space-2); }
+  .about__main h2 { margin-block-start: var(--space-3); }
+  .about__main h2:first-child { margin-block-start: 0; }
+  .about__list { margin: 0; padding-inline-start: var(--space-3); max-width: var(--measure); color: var(--color-text-muted); }
+  .about__list li { margin-block-end: var(--space-0-5); }
+  .about__facts {
+    background: var(--color-bg-subtle);
+    border-block-start: var(--rule-heavy) solid var(--color-heading);
+    padding: var(--space-2);
+    display: flex; flex-direction: column; gap: var(--space-1);
+  }
+  .about__facts-h { color: var(--color-heading); margin: 0; }
+  .about__facts-note { margin: 0; color: var(--color-text-muted); }
+  .about__pillars { margin-block-start: var(--space-8); }
+  .about__pillars-h { margin-block-end: var(--space-3); }
+</style>

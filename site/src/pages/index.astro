@@ -1,0 +1,183 @@
+---
+/**
+ * Home (§8.1). All eight required modules, in order.
+ * Every product fact on this page comes from the content collection — no
+ * product data is written into this template (§18 "Product content is not
+ * duplicated across templates").
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Hero from "../components/content/Hero.astro";
+import SectionIntro from "../components/content/SectionIntro.astro";
+import ProductCard from "../components/product/ProductCard.astro";
+import ValuePillars from "../components/content/ValuePillars.astro";
+import SafetyNote from "../components/content/SafetyNote.astro";
+import QuoteCtaPanel from "../components/content/QuoteCtaPanel.astro";
+import { getActiveProducts, getPopulatedFamilies, CATEGORY_INTRO } from "../lib/catalog";
+import { getCollection } from "astro:content";
+import { ORGANIZATION, WEBSITE } from "../lib/seo";
+
+const [products, families, industries] = await Promise.all([
+  getActiveProducts(),
+  getPopulatedFamilies(),
+  getCollection("industries"),
+]);
+industries.sort((a, b) => a.data.order - b.data.order);
+---
+
+<BaseLayout
+  title="Feytom | Cargo Securement & Industrial Supply"
+  description="Work-ready chains, lashing belts and industrial rope for transportation, warehouse and material-handling operations across the United States. Request pricing and availability."
+  schema={[ORGANIZATION, WEBSITE]}
+>
+  <Hero />
+
+  <!-- Module 3 — product families -->
+  <section class="section" aria-labelledby="families-h">
+    <div class="container">
+      <SectionIntro
+        id="families-h"
+        eyebrow="Cargo Securement"
+        heading="Three product families"
+        body={CATEGORY_INTRO}
+      />
+      <ul class="fcards grid grid--3">
+        {
+          families.map(({ family, products: inFamily }) => (
+            <li class="card card--action fcard">
+              <div class="card__body">
+                <h3 class="t-h3 fcard__title">
+                  <a href={`/products/?family=${family.data.slug}`} class="fcard__link">
+                    {family.data.name}
+                  </a>
+                </h3>
+                <p class="fcard__intro">{family.data.intro}</p>
+                <p class="t-small fcard__count t-numeric">
+                  {inFamily.length} {inFamily.length === 1 ? "product" : "products"}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Module 4 — featured products (all four at launch) -->
+  <section class="section section--subtle" aria-labelledby="featured-h">
+    <div class="container">
+      <SectionIntro
+        id="featured-h"
+        eyebrow="The catalog"
+        heading="What Feytom supplies"
+        body="Grade, diameter, length and packaging are stated on every product. Bulk quantities available on all four."
+      />
+      <ul class="plist grid grid--3">
+        {products.map((p) => <li><ProductCard product={p} level={3} /></li>)}
+      </ul>
+      <p class="home__more">
+        <a href="/products/" class="btn btn--secondary">View the full catalog</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- Module 5 — value pillars -->
+  <section class="section" aria-labelledby="pillars-h">
+    <div class="container">
+      <SectionIntro id="pillars-h" eyebrow="How we work" heading="What you can rely on" />
+      <ValuePillars />
+    </div>
+  </section>
+
+  <!-- Module 6 — industries -->
+  <section class="section section--subtle" aria-labelledby="industries-h">
+    <div class="container">
+      <SectionIntro
+        id="industries-h"
+        eyebrow="Who we supply"
+        heading="Built around how you buy"
+        body="Different operations ask different questions of a supplier. These are the three we hear most."
+      />
+      <ul class="ilist grid grid--3">
+        {
+          industries.map((i) => (
+            <li class="card iCard">
+              <div class="card__body">
+                <h3 class="t-h3 icard__title">
+                  <a href={`/industries/#${i.data.slug}`} class="link">{i.data.name}</a>
+                </h3>
+                <p class="icard__q">&ldquo;{i.data.visitorQuestion}&rdquo;</p>
+                <p class="t-small icard__intro">{i.data.intro}</p>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- Module 7 — safety and documentation -->
+  <section class="section" aria-labelledby="safety-section-h">
+    <div class="container home__safety">
+      <h2 id="safety-section-h" class="sr-only">Technical and safety documentation</h2>
+      <SafetyNote />
+    </div>
+  </section>
+
+  <!-- Module 8 — closing RFQ panel -->
+  <QuoteCtaPanel />
+</BaseLayout>
+
+<style>
+  .fcards,
+  .plist,
+  .ilist {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .fcard,
+  .iCard {
+    position: relative;
+  }
+  .fcard__title,
+  .icard__title {
+    margin: 0;
+  }
+  .fcard__link {
+    text-decoration: none;
+  }
+  .fcard__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .fcard:hover .fcard__link {
+    text-decoration: underline;
+    text-decoration-color: var(--color-action);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.15em;
+  }
+  .fcard__intro,
+  .icard__intro {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+  .fcard__count {
+    margin: auto 0 0;
+    padding-block-start: var(--space-1);
+    color: var(--color-text-muted);
+  }
+  .icard__q {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    line-height: var(--leading-snug);
+    color: var(--color-heading);
+  }
+  .home__more {
+    margin-block-start: var(--space-4);
+  }
+  .home__safety {
+    max-width: var(--container);
+  }
+</style>

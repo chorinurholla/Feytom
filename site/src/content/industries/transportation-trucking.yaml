@@ -1,0 +1,9 @@
+name: Transportation & Trucking
+slug: transportation-trucking
+order: 1
+visitorQuestion: Can I get securement supplies in the sizes and quantities my fleet actually uses?
+intro: Fleet and trucking operations buy securement by the roll, the bag and the drum, not by the piece. Feytom supplies chains, lashing belts and rope in continuous lengths and bulk packaging, with the grade, diameter and length stated plainly so a purchase decision does not need a phone call first.
+needs:
+  - Grade, diameter and length stated before you enquire
+  - Bulk packaging suited to repeat fleet use
+  - A quote route that accepts a quantity and a delivery location

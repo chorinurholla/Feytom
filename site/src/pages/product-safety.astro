@@ -1,0 +1,119 @@
+---
+/**
+ * Product Safety (§8.6).
+ *
+ * Explains how Feytom handles specifications and documentation. §8.6 forbids
+ * generalised rigging, tie-down or load-calculation instructions without
+ * qualified technical review, so none appear here — this page is about our
+ * publication policy, not about how to secure a load.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/global/Breadcrumbs.astro";
+import SectionIntro from "../components/content/SectionIntro.astro";
+import QuoteCtaPanel from "../components/content/QuoteCtaPanel.astro";
+import { SAFETY_NOTE, SAFETY_NOTE_CONTEXT } from "../lib/safety";
+import { ORGANIZATION, breadcrumbList } from "../lib/seo";
+const crumbs = [{ label: "Home", href: "/" }, { label: "Product safety" }];
+---
+<BaseLayout
+  title="Product Safety & Documentation | Feytom"
+  description="How Feytom handles product specifications, load limits and safety documentation, and what we will not publish until manufacturer documentation supports it."
+  schema={[ORGANIZATION, breadcrumbList(crumbs)]}
+>
+  <div class="container"><Breadcrumbs crumbs={crumbs} /></div>
+
+  <section class="section section--tight-top" aria-labelledby="ps-h">
+    <div class="container ps">
+      <SectionIntro
+        id="ps-h" level={1}
+        eyebrow="Product safety"
+        heading="How we handle specifications and documentation"
+        body="This page explains what we publish, what we withhold, and how to obtain technical documentation."
+      />
+
+      <div class="ps__note" role="note" aria-labelledby="ps-note-h">
+        <h2 id="ps-note-h" class="t-eyebrow ps__note-h">Important product note</h2>
+        <p class="ps__note-body">{SAFETY_NOTE}</p>
+        <p class="t-small ps__note-ctx">{SAFETY_NOTE_CONTEXT}</p>
+      </div>
+
+      <div class="ps__body">
+        <h2 class="t-h2">What we publish</h2>
+        <p class="t-body">
+          Product pages carry the values we can confirm from the product as
+          supplied: dimensions, material, grade, length and packaging. Each one is
+          recorded against its source, and anything not yet verified is labelled as
+          unverified rather than presented as fact.
+        </p>
+
+        <h2 class="t-h2">What we withhold, and why</h2>
+        <p class="t-body">
+          Working-load limits, breaking strengths, rated capacities, finishes,
+          construction details and regulatory or certification claims are not
+          published until the manufacturer's technical documentation supports them.
+          A figure stamped or printed on a product is a marking. It is not, on its
+          own, a certified rating.
+        </p>
+        <ul class="ps__list">
+          <li>
+            <strong>Markings are published as markings.</strong> The lashing belt
+            carries a 3T marking. We state that it is a product marking, and we do
+            not present it as a working-load limit.
+          </li>
+          <li>
+            <strong>Grades are published as grades.</strong> Grade 70 and Grade 43
+            identify the chain. Confirm the correct grade for your application
+            against the manufacturer's documentation.
+          </li>
+          <li>
+            <strong>Applications are possible uses, not approvals.</strong> A use
+            listed on a product page is not a statement that the product is
+            approved for your specific load, equipment or method.
+          </li>
+        </ul>
+
+        <h2 class="t-h2">How to obtain technical documentation</h2>
+        <p class="t-body">
+          Ask for it in a quote request. Tell us the product and the application,
+          and we will supply the manufacturer documentation we hold or tell you
+          plainly that we do not yet hold it. Specification sheets will appear as
+          downloads on product pages once approved documents are available.
+        </p>
+
+        <h2 class="t-h2">What this page is not</h2>
+        <p class="t-body">
+          It is not guidance on how to secure a load. Tie-down counts, load
+          calculations, inspection intervals and rigging method depend on your
+          equipment, your load and the regulations that apply to you. Those
+          decisions need the manufacturer's instructions and qualified judgement,
+          and this page is not a substitute for either.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <QuoteCtaPanel
+    heading="Need the documentation before you order?"
+    body="Ask for it in a quote request. Name the product and the application and we will tell you exactly what we hold."
+  />
+</BaseLayout>
+
+<style>
+  .ps__note {
+    border: var(--rule) solid var(--color-border);
+    border-inline-start: var(--rule-heavy) solid var(--color-heading);
+    background: var(--color-bg-subtle);
+    padding: var(--space-3);
+    display: flex; flex-direction: column; gap: var(--space-1);
+    margin-block-end: var(--space-6);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .ps__note-h { color: var(--color-heading); margin: 0; }
+  .ps__note-body { margin: 0; font-size: var(--text-lg); max-width: var(--measure); }
+  .ps__note-ctx { margin: 0; color: var(--color-text-muted); max-width: var(--measure); }
+  .ps__body { display: flex; flex-direction: column; gap: var(--space-2); max-width: var(--measure); }
+  .ps__body h2 { margin-block-start: var(--space-3); }
+  .ps__body h2:first-child { margin-block-start: 0; }
+  .ps__list { margin: 0; padding-inline-start: var(--space-3); display: flex; flex-direction: column; gap: var(--space-1); }
+  .ps__list strong { color: var(--color-heading); }
+</style>

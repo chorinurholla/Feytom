@@ -1,0 +1,26 @@
+{
+  "name": "feytom-website",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "npm run check:launch && npm run check:tokens && npm run check:content && astro build",
+    "preview": "astro preview",
+    "check:tokens": "node scripts/contrast.mjs",
+    "check:content": "node scripts/content-guard.mjs",
+    "logo:build": "python3 scripts/build-logo.py",
+    "check:launch": "node scripts/launch-guard.mjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "@axe-core/playwright": "^4.13.0",
+    "@fontsource/barlow-condensed": "^5.3.0",
+    "@fontsource/inter": "^5.3.0",
+    "astro": "^7.2.2",
+    "axe-core": "^4.13.0",
+    "playwright": "^1.62.1"
+  },
+  "private": true,
+  "type": "module"
+}

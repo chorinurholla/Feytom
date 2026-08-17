@@ -1,0 +1,45 @@
+---
+/**
+ * Utility bar (§8.1.1).
+ * States the service area in the visitor's own terms, above everything else.
+ * No delivery promise, no response-time claim — neither is verified.
+ */
+---
+
+<div class="utility on-dark">
+  <div class="container utility__inner">
+    <p class="utility__line t-small">
+      Serving transportation, warehouse and industrial operations across the
+      United States.
+    </p>
+    <p class="utility__line utility__line--aside t-small">
+      Bulk quantities · Contact for pricing and availability
+    </p>
+  </div>
+</div>
+
+<style>
+  .utility {
+    background: var(--color-bg-inverse-deep);
+    color: var(--color-text-inverse-muted);
+    border-bottom: 1px solid var(--color-border-inverse);
+  }
+  .utility__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-0-5) var(--space-3);
+    padding-block: var(--space-1);
+  }
+  .utility__line {
+    margin: 0;
+  }
+  /* The aside is a secondary detail — it drops first, it never wraps awkwardly
+     above the primary service-area statement. */
+  @media (max-width: 47.99em) {
+    .utility__line--aside {
+      display: none;
+    }
+  }
+</style>

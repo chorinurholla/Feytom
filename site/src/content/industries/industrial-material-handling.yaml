@@ -1,0 +1,9 @@
+name: Industrial & Material Handling
+slug: industrial-material-handling
+order: 3
+visitorQuestion: Is this a supplier my procurement process can actually work with?
+intro: Procurement teams need a supplier that states a legal identity, publishes what it knows, and says clearly what it has not yet verified. Feytom LLC is a United States company supplying nationwide, and technical data is published only where manufacturer documentation supports it.
+needs:
+  - A stated legal entity and a formal quoting route
+  - Specifications that separate confirmed data from pending data
+  - Documentation supplied on request rather than implied

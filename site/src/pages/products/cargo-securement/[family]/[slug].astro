@@ -1,0 +1,262 @@
+---
+/**
+ * Product detail page (§8.4). All ten required modules.
+ */
+import type { GetStaticPaths } from "astro";
+import BaseLayout from "../../../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../../../components/global/Breadcrumbs.astro";
+import SpecList from "../../../../components/product/SpecList.astro";
+import ProductPlaceholder from "../../../../components/product/ProductPlaceholder.astro";
+import ProductCard from "../../../../components/product/ProductCard.astro";
+import SafetyNote from "../../../../components/content/SafetyNote.astro";
+import QuoteCtaPanel from "../../../../components/content/QuoteCtaPanel.astro";
+import {
+  getActiveProducts,
+  resolveRelated,
+  familyOf,
+  quoteUrl,
+  CATEGORY,
+} from "../../../../lib/catalog";
+import { ORGANIZATION, breadcrumbList, productSchema } from "../../../../lib/seo";
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  const products = await getActiveProducts();
+  return products.map((product) => ({
+    params: { family: product.data.productFamily.id, slug: product.data.slug },
+    props: { product },
+  }));
+};
+
+const { product } = Astro.props;
+const d = product.data;
+const [family, related] = await Promise.all([
+  familyOf(product),
+  resolveRelated(product),
+]);
+const familyKey = d.productFamily.id as "lashing" | "chains" | "rope";
+
+const crumbs = [
+  { label: "Home", href: "/" },
+  { label: "Products", href: "/products/" },
+  { label: family.data.name, href: `/products/?family=${family.data.slug}` },
+  { label: d.name },
+];
+
+/* Packaging detail the client has not yet confirmed (§19 "Confirm product SKUs
+   and order units"). Stated as unknown rather than omitted silently — a
+   procurement buyer needs to know it is a question to ask, not a gap. */
+const packagingUnknowns = [
+  ["Units per case", d.packaging.unitsPerCase],
+  ["Case dimensions", d.packaging.caseDimensions],
+  ["Shipping weight", d.packaging.shippingWeight],
+].filter(([, v]) => v === null) as [string, null][];
+---
+
+<BaseLayout
+  title={d.seo.title}
+  description={d.seo.description}
+  current="/products"
+  schema={[ORGANIZATION, breadcrumbList(crumbs), productSchema(product)]}
+>
+  <div class="container">
+    <Breadcrumbs crumbs={crumbs} />
+  </div>
+
+  <article class="pdp">
+    <div class="container pdp__top">
+      <div class="pdp__media">
+        {
+          d.media.heroImage ? (
+            <img src={d.media.heroImage} alt={d.media.altText!} width="900" height="675" />
+          ) : (
+            <ProductPlaceholder family={familyKey} sizeSummary={d.sizeSummary} size="detail" />
+          )
+        }
+        {
+          !d.media.heroImage && (
+            <p class="t-small pdp__mediaNote">
+              Product photography is being prepared. The plate above shows the
+              supplied size rather than a stand-in image of a different product.
+            </p>
+          )
+        }
+      </div>
+
+      <div class="pdp__head">
+        <p class="t-eyebrow pdp__eyebrow">
+          {CATEGORY} · {family.data.name}
+        </p>
+        <h1 class="t-h1 pdp__title">{d.name}</h1>
+        <p class="t-lead pdp__desc">{d.shortDescription}</p>
+
+        <h2 class="t-eyebrow pdp__sublabel">Specifications</h2>
+        <SpecList specifications={d.specifications} caption={`Specifications for ${d.name}`} />
+
+        <div class="pdp__actions">
+          <a href={quoteUrl(product)} class="btn btn--primary">
+            Request Pricing &amp; Availability
+          </a>
+          <p class="t-small pdp__avail">
+            Bulk quantities available. Contact for pricing and availability.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container pdp__body">
+      <section class="pdp__section" aria-labelledby="apps-h">
+        <h2 id="apps-h" class="t-h2">Possible applications</h2>
+        <p class="pdp__note">
+          These are uses the product is supplied for. They are not approvals for a
+          specific load, and they do not replace the manufacturer's instructions.
+        </p>
+        <ul class="chips pdp__chips">
+          {d.applications.map((a) => <li class="chip">{a}</li>)}
+        </ul>
+      </section>
+
+      <section class="pdp__section" aria-labelledby="pack-h">
+        <h2 id="pack-h" class="t-h2">Packaging and bulk quantities</h2>
+        <p class="pdp__note">
+          Supplied by the {d.packaging.type.toLowerCase()}. Bulk quantities are
+          available — include the quantity you need in a quote request and we will
+          confirm what can be supplied.
+        </p>
+        {
+          packagingUnknowns.length > 0 && (
+            <dl class="speclist pdp__unknowns">
+              {packagingUnknowns.map(([label]) => (
+                <div class="speclist__row">
+                  <dt class="speclist__label">{label}</dt>
+                  <dd class="speclist__value pdp__unknown">Not yet confirmed</dd>
+                </div>
+              ))}
+            </dl>
+          )
+        }
+      </section>
+
+      <section class="pdp__section" aria-labelledby="docs-h">
+        <h2 id="docs-h" class="sr-only" id="docs-h">Documentation</h2>
+        <SafetyNote />
+        {
+          /* §8.4.9: a download area appears ONLY when an approved spec sheet
+             exists. d.media.specSheet is null for all four products, so nothing
+             renders here — no empty "Downloads" heading, no dead button. */
+          d.media.specSheet && (
+            <p class="pdp__download">
+              <a href={d.media.specSheet} class="btn btn--secondary">
+                Download the specification sheet (PDF)
+              </a>
+            </p>
+          )
+        }
+      </section>
+
+      {
+        related.length > 0 && (
+          <section class="pdp__section" aria-labelledby="related-h">
+            <h2 id="related-h" class="t-h2">Related products</h2>
+            <ul class="pdp__related grid grid--2">
+              {related.map((r) => (
+                <li>
+                  <ProductCard product={r} level={3} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+    </div>
+  </article>
+
+  <QuoteCtaPanel
+    heading="Send the quantity and we will price it."
+    productName={d.name}
+    href={quoteUrl(product)}
+  />
+</BaseLayout>
+
+<style>
+  .pdp__top {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+    padding-block-end: var(--space-6);
+  }
+  @media (min-width: 62em) {
+    .pdp__top {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+  }
+  .pdp__media {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+  .pdp__mediaNote {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+  .pdp__head {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .pdp__eyebrow {
+    color: var(--color-text-muted);
+  }
+  .pdp__title {
+    margin: 0;
+  }
+  .pdp__desc {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: var(--measure-narrow);
+  }
+  .pdp__sublabel {
+    color: var(--color-text-muted);
+    margin-block-start: var(--space-1);
+  }
+  .pdp__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+    margin-block-start: var(--space-2);
+  }
+  .pdp__avail {
+    margin: 0;
+    color: var(--color-text-muted);
+  }
+  .pdp__body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+    padding-block-end: var(--space-8);
+  }
+  .pdp__section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .pdp__note {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: var(--measure);
+  }
+  .pdp__unknowns {
+    max-width: var(--measure);
+  }
+  .pdp__unknown {
+    color: var(--color-pending);
+    font-weight: 600;
+  }
+  .pdp__related {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+</style>

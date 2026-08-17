@@ -1,0 +1,51 @@
+# Source: Feytom Website Taxonomy v1.0 Appendix A + FEYTOM LLC Product List
+# PDF (16 Aug 2026). Both agree on every value below.
+id: feytom-clb-2-328
+status: active
+name: Cargo Lashing Belt
+slug: cargo-lashing-belt-2in-328ft
+eyebrow: Cargo Securement
+primaryCategory: Cargo Securement
+productFamily: lashing
+shortDescription: Heavy-duty cargo-lashing belt for securing loads during transportation, warehouse handling and industrial operations.
+sizeSummary: 2 in x 328 ft (100 m)
+
+applications:
+  - Securing loads during transportation
+  - Warehouse handling
+  - Industrial operations
+
+specifications:
+  - label: Width
+    value: 2 inches
+    sourceStatus: confirmed
+  - label: Length
+    value: 328 feet per roll (100 m)
+    sourceStatus: confirmed
+  - label: Product marking
+    value: 3T
+    sourceStatus: confirmed
+  - label: Packaging
+    value: Roll
+    sourceStatus: confirmed
+
+packaging:
+  type: Roll
+
+commerce:
+  mode: request_quote
+  inventoryStatus: contact_for_availability
+
+safety:
+  withheldClaims:
+    - The 3T marking is published as a product marking only. It is not presented
+      as a certified working-load limit, and must not be read as one, until
+      manufacturer documentation establishes a rating.
+
+seo:
+  title: Cargo Lashing Belt, 2 in x 328 ft | Feytom
+  description: 2 in x 328 ft heavy-duty cargo-lashing belt on the roll, for transportation, warehouse handling and industrial operations. Request bulk pricing from Feytom.
+
+relatedProducts:
+  - heavy-duty-pe-rope-3-8in-502ft
+  - grade-70-truckers-chain-5-16in-20ft

@@ -1,0 +1,62 @@
+---
+/**
+ * Closing quote panel (§8.1.8). One filled action, on a dark surface so the
+ * orange reads as the single action in the viewport.
+ */
+import StrapDevice from "./StrapDevice.astro";
+
+interface Props {
+  heading?: string;
+  body?: string;
+  href?: string;
+  cta?: string;
+  productName?: string;
+}
+const {
+  heading = "Tell us what you need and how much.",
+  body = "Send the product, the quantity and the delivery location. We reply with pricing and availability.",
+  href = "/request-a-quote/",
+  cta = "Request a Quote",
+  productName,
+} = Astro.props;
+---
+<section class="qpanel on-dark" aria-labelledby="qpanel-h">
+  <div class="container qpanel__inner">
+    <div class="qpanel__content">
+      <h2 id="qpanel-h" class="t-h2 qpanel__heading">{heading}</h2>
+      <p class="qpanel__body">{body}</p>
+      <a href={href} class="btn btn--primary">
+        {productName ? `Request Pricing & Availability` : cta}
+      </a>
+      {productName && (
+        <p class="t-small qpanel__ctx">Your request will be pre-filled with {productName}.</p>
+      )}
+    </div>
+    <div class="qpanel__aside"><StrapDevice angle={16} /></div>
+  </div>
+</section>
+
+<style>
+  .qpanel {
+    position: relative;
+    background: var(--color-bg-inverse-deep);
+    color: var(--color-text-inverse);
+    border-block-start: var(--rule-heavy) solid var(--color-action);
+    overflow: hidden;
+  }
+  .qpanel__inner { position: relative; padding-block: var(--section-y); }
+  .qpanel__content { max-width: 34rem; display: flex; flex-direction: column; gap: var(--space-2); align-items: flex-start; }
+  .qpanel__heading { color: var(--color-text-inverse); }
+  .qpanel__body { color: var(--color-text-inverse-muted); margin: 0; max-width: var(--measure); }
+  .qpanel__ctx { color: var(--color-text-inverse-muted); margin: 0; }
+  .qpanel__aside { display: none; }
+  @media (min-width: 60em) {
+    .qpanel__inner { display: grid; grid-template-columns: minmax(0,40rem) minmax(12rem,1fr); gap: var(--space-6); align-items: center; }
+    .qpanel__aside {
+      display: block; position: relative; align-self: stretch;
+      margin-inline-end: calc(var(--gutter) * -1);
+      margin-block: calc(var(--section-y) * -1);
+      overflow: hidden;
+    }
+  }
+</style>

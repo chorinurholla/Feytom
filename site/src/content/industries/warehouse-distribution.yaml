@@ -1,0 +1,9 @@
+name: Warehouse & Distribution
+slug: warehouse-distribution
+order: 2
+visitorQuestion: Will these supplies hold up to daily handling, and can I reorder them consistently?
+intro: Warehouse and distribution teams need consumables that arrive in a consistent format every time. Every Feytom product is listed with its packaging type and length per unit, so what you reorder matches what you received.
+needs:
+  - Consistent packaging format across reorders
+  - Product information that matches what arrives
+  - Bulk quantities for multiple bays or sites

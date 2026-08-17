@@ -1,0 +1,89 @@
+---
+/**
+ * Site footer. §16 non-negotiable: the footer says Feytom LLC.
+ *
+ * Deliberately absent until the client verifies them (§19): telephone, email,
+ * street address, social profiles. Legal pages are scaffolds and stay out of
+ * navigation, so they are not linked here either.
+ */
+import Logo from "./Logo.astro";
+import { getPopulatedFamilies } from "../../lib/catalog";
+const families = await getPopulatedFamilies();
+const year = 2026; // build-time constant; no clock in the build (deterministic)
+---
+<footer class="footer on-dark">
+  <div class="container footer__inner">
+    <div class="footer__brand">
+      <Logo variant="reversed" height={34} decorative />
+      <p class="t-small footer__desc">
+        Feytom supplies chains, lashing belts, ropes and industrial essentials for
+        transportation, warehouse and material-handling operations across the
+        United States.
+      </p>
+    </div>
+
+    <nav class="footer__nav" aria-label="Products">
+      <h2 class="t-eyebrow footer__h">Cargo Securement</h2>
+      <ul class="footer__list">
+        {families.map(({ family }) => (
+          <li><a href={`/products/?family=${family.data.slug}`} class="footer__link">{family.data.name}</a></li>
+        ))}
+        <li><a href="/products/" class="footer__link">All products</a></li>
+      </ul>
+    </nav>
+
+    <nav class="footer__nav" aria-label="Company">
+      <h2 class="t-eyebrow footer__h">Company</h2>
+      <ul class="footer__list">
+        <li><a href="/about/" class="footer__link">About</a></li>
+        <li><a href="/industries/" class="footer__link">Industries</a></li>
+        <li><a href="/product-safety/" class="footer__link">Product safety</a></li>
+        <li><a href="/contact/" class="footer__link">Contact</a></li>
+      </ul>
+    </nav>
+
+    <div class="footer__nav">
+      <h2 class="t-eyebrow footer__h">Enquiries</h2>
+      <p class="t-small footer__desc">Bulk quantities available. Contact for pricing and availability.</p>
+      <a href="/request-a-quote/" class="btn btn--secondary btn--sm">Request a Quote</a>
+    </div>
+  </div>
+
+  <div class="footer__legal">
+    <div class="container footer__legal-inner">
+      <p class="t-small">&copy; {year} Feytom LLC. All rights reserved.</p>
+      <p class="t-small footer__area">Serving customers across the United States.</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--color-bg-inverse-deep);
+    color: var(--color-text-inverse-muted);
+    border-block-start: var(--rule-heavy) solid var(--color-action);
+  }
+  .footer__inner {
+    display: grid; gap: var(--space-4);
+    padding-block: var(--space-6);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 40em) { .footer__inner { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 62em) { .footer__inner { grid-template-columns: 1.6fr 1fr 1fr 1.2fr; } }
+  .footer__brand { display: flex; flex-direction: column; gap: var(--space-2); align-items: flex-start; }
+  .footer__desc { margin: 0; max-width: 34ch; }
+  .footer__nav { display: flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; }
+  .footer__h { color: var(--color-text-inverse); margin: 0 0 var(--space-0-5); }
+  .footer__list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; }
+  .footer__link {
+    display: flex; align-items: center; min-height: 40px;
+    color: var(--color-text-inverse); text-decoration: none;
+  }
+  .footer__link:hover { text-decoration: underline; text-decoration-color: var(--color-action); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+  .footer__legal { border-block-start: var(--rule) solid var(--color-border-inverse); }
+  .footer__legal-inner {
+    display: flex; flex-wrap: wrap; gap: var(--space-0-5) var(--space-3);
+    justify-content: space-between; padding-block: var(--space-2);
+  }
+  .footer__legal p { margin: 0; }
+</style>

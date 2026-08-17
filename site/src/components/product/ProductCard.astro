@@ -1,0 +1,116 @@
+---
+import type { Product } from "../../lib/catalog";
+import { productUrl } from "../../lib/catalog";
+import ProductPlaceholder from "./ProductPlaceholder.astro";
+
+interface Props {
+  product: Product;
+  /** Heading level so the card fits the page's heading order (§13). */
+  level?: 2 | 3 | 4;
+}
+const { product, level = 3 } = Astro.props;
+const d = product.data;
+const Heading = `h${level}` as "h2" | "h3" | "h4";
+const family = d.productFamily.id as "lashing" | "chains" | "rope";
+
+/* One compact spec highlight per card (§8.2) — the two fields a buyer scans
+   first. Never a load rating: none is confirmed. */
+const highlights = [
+  { label: "Size", value: d.sizeSummary },
+  { label: "Packaging", value: d.packaging.type },
+];
+---
+
+<article class="card card--action pcard">
+  {
+    d.media.heroImage ? (
+      <img class="pcard__img" src={d.media.heroImage} alt={d.media.altText!} width="600" height="400" loading="lazy" />
+    ) : (
+      <ProductPlaceholder family={family} sizeSummary={d.sizeSummary} size="card" />
+    )
+  }
+
+  <div class="card__body">
+    <p class="t-eyebrow pcard__eyebrow">{d.primaryCategory}</p>
+
+    <Heading class="t-h3 pcard__title">
+      <a href={productUrl(product)} class="pcard__link">{d.name}</a>
+    </Heading>
+
+    <p class="t-small pcard__desc">{d.shortDescription}</p>
+
+    <dl class="pcard__specs">
+      {
+        highlights.map((h) => (
+          <div class="pcard__spec">
+            <dt>{h.label}</dt>
+            <dd class="t-numeric">{h.value}</dd>
+          </div>
+        ))
+      }
+    </dl>
+
+    <p class="t-small pcard__avail">Bulk quantities available.</p>
+  </div>
+</article>
+
+<style>
+  .pcard {
+    position: relative;
+  }
+  .pcard__eyebrow {
+    color: var(--color-text-muted);
+  }
+  .pcard__title {
+    margin: 0;
+  }
+  /* Whole card is the target, but the accessible name comes from the real link
+     inside the heading — no redundant "read more" link, no div-as-button. */
+  .pcard__link {
+    text-decoration: none;
+  }
+  .pcard__link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+  .pcard:hover .pcard__link {
+    color: var(--color-action-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-action);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 0.15em;
+  }
+  .pcard__desc {
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+  /* Pushed to the bottom so spec rows line up across a row of cards even when
+     descriptions run to different line counts. */
+  .pcard__specs {
+    margin: auto 0 0;
+    padding-block-start: var(--space-1);
+    border-top: var(--rule) solid var(--color-border);
+  }
+  .pcard__spec {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding-block: var(--space-0-5);
+    border-bottom: var(--rule) solid var(--color-border);
+    font-size: var(--text-sm);
+  }
+  .pcard__spec dt {
+    color: var(--color-text-muted);
+    font-weight: 600;
+  }
+  .pcard__spec dd {
+    margin: 0;
+    text-align: right;
+  }
+  .pcard__avail {
+    color: var(--color-text-muted);
+    margin: 0;
+    padding-block-start: var(--space-1);
+  }
+</style>

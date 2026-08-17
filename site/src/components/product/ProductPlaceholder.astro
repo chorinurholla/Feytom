@@ -1,0 +1,119 @@
+---
+/**
+ * Product image placeholder.
+ *
+ * Deliberately NOT a photograph and not pretending to be one. §19 permits only
+ * "clearly generic, non-misleading placeholders", and using stock imagery of
+ * another company's chain would be exactly the misleading case. This is a
+ * branded plate carrying the product's own size line — useful information
+ * rather than filler — with a family-specific motif.
+ *
+ * Replaced by the real photograph via product.media.heroImage, which the schema
+ * refuses to accept without alt text.
+ */
+interface Props {
+  family: "lashing" | "chains" | "rope";
+  sizeSummary: string;
+  /** Cards get the compact treatment; product pages get the large one. */
+  size?: "card" | "detail";
+}
+const { family, sizeSummary, size = "card" } = Astro.props;
+
+const label = { lashing: "Lashing", chains: "Chains", rope: "Rope" }[family];
+---
+
+<div class:list={["ph", `ph--${size}`]}>
+  <svg class="ph__art" viewBox="0 0 120 80" aria-hidden="true" focusable="false">
+    {
+      family === "chains" && (
+        <g fill="none" stroke="currentColor" stroke-width="3.2">
+          <rect x="16" y="30" width="26" height="20" rx="9" />
+          <rect x="38" y="30" width="26" height="20" rx="9" />
+          <rect x="60" y="30" width="26" height="20" rx="9" />
+          <rect x="82" y="30" width="26" height="20" rx="9" />
+        </g>
+      )
+    }
+    {
+      family === "lashing" && (
+        <g fill="none" stroke="currentColor" stroke-width="4">
+          <path d="M10 26 H110" />
+          <path d="M10 40 H110" />
+          <path d="M10 54 H110" />
+        </g>
+      )
+    }
+    {
+      family === "rope" && (
+        <g fill="none" stroke="currentColor" stroke-width="3.2">
+          <path d="M12 40 q9 -14 18 0 t18 0 t18 0 t18 0 t18 0" />
+          <path d="M12 52 q9 -14 18 0 t18 0 t18 0 t18 0 t18 0" />
+        </g>
+      )
+    }
+  </svg>
+
+  <p class="ph__meta t-eyebrow">
+    <span class="ph__family">{label}</span>
+    <span class="ph__size t-numeric">{sizeSummary}</span>
+  </p>
+</div>
+
+<style>
+  .ph {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    background: var(--color-bg-inverse);
+    color: var(--color-text-inverse);
+    /* Clipped corner ties the plate to the logo and the industrial language. */
+    clip-path: polygon(
+      0 0,
+      100% 0,
+      100% calc(100% - var(--clip)),
+      calc(100% - var(--clip)) 100%,
+      0 100%
+    );
+  }
+  .ph::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(
+        to right,
+        rgb(255 255 255 / 0.05) 1px,
+        transparent 1px
+      ),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .ph--card {
+    aspect-ratio: 3 / 2;
+  }
+  .ph--detail {
+    aspect-ratio: 4 / 3;
+  }
+  .ph__art {
+    position: relative;
+    width: 100%;
+    height: auto;
+    margin: auto;
+    max-width: 18rem;
+    color: var(--color-action);
+  }
+  .ph__meta {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-0-5) var(--space-1-5);
+    justify-content: space-between;
+    margin: 0;
+    color: var(--color-text-inverse-muted);
+  }
+  .ph__size {
+    letter-spacing: 0.06em;
+  }
+</style>

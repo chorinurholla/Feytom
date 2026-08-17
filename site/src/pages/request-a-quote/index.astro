@@ -1,0 +1,86 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumbs from "../../components/global/Breadcrumbs.astro";
+import SectionIntro from "../../components/content/SectionIntro.astro";
+import QuoteForm from "../../components/forms/QuoteForm.astro";
+import SafetyNote from "../../components/content/SafetyNote.astro";
+import { getActiveProducts } from "../../lib/catalog";
+import { ORGANIZATION, breadcrumbList } from "../../lib/seo";
+
+const products = await getActiveProducts();
+const crumbs = [{ label: "Home", href: "/" }, { label: "Request a quote" }];
+---
+<BaseLayout
+  title="Request a Quote | Feytom"
+  description="Request pricing and availability for Feytom cargo-securement products. Send the product, quantity and delivery location and we will come back with pricing."
+  current="/request-a-quote"
+  schema={[ORGANIZATION, breadcrumbList(crumbs)]}
+>
+  <div class="container"><Breadcrumbs crumbs={crumbs} /></div>
+
+  <section class="section section--tight-top" aria-labelledby="rfq-h">
+    <div class="container rfq">
+      <SectionIntro
+        id="rfq-h" level={1}
+        eyebrow="Request a quote"
+        heading="Pricing and availability"
+        body="Six fields is the minimum we need to price a job properly. Everything else is optional."
+      />
+
+      <div class="rfq__cols">
+        <div class="rfq__form">
+          <QuoteForm products={products} />
+        </div>
+
+        <aside class="rfq__aside" aria-labelledby="rfq-aside-h">
+          <h2 id="rfq-aside-h" class="t-eyebrow rfq__aside-h">What happens next</h2>
+          <ol class="rfq__steps">
+            <li>We confirm what can be supplied against your quantity.</li>
+            <li>We come back with pricing and availability.</li>
+            <li>If you need manufacturer documentation, we send what we hold — or tell you we do not hold it.</li>
+          </ol>
+          <p class="t-small rfq__nb">
+            We do not publish a response time until we can commit to one.
+          </p>
+          <hr class="rule" />
+          <h2 class="t-eyebrow rfq__aside-h">Why we ask for each field</h2>
+          <dl class="speclist">
+            <div class="speclist__row">
+              <dt class="speclist__label">Company</dt>
+              <dd class="speclist__value">Feytom supplies business and trade customers.</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Quantity</dt>
+              <dd class="speclist__value">Bulk pricing depends on it. A range is fine.</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Delivery location</dt>
+              <dd class="speclist__value">Needed to quote accurately across the United States.</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+
+      <div class="rfq__safety"><SafetyNote compact /></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .rfq__cols { display: grid; gap: var(--space-6); grid-template-columns: minmax(0, 1fr); }
+  .rfq__cols > * { min-width: 0; }
+  @media (min-width: 62em) {
+    .rfq__cols { grid-template-columns: minmax(0,1.6fr) minmax(0,1fr); gap: var(--space-8); align-items: start; }
+  }
+  .rfq__aside {
+    background: var(--color-bg-subtle);
+    border-block-start: var(--rule-heavy) solid var(--color-heading);
+    padding: var(--space-2);
+    display: flex; flex-direction: column; gap: var(--space-1);
+  }
+  .rfq__aside-h { color: var(--color-heading); margin: 0; }
+  .rfq__steps { margin: 0; padding-inline-start: var(--space-3); color: var(--color-text-muted); }
+  .rfq__steps li { margin-block-end: var(--space-0-5); }
+  .rfq__nb { margin: 0; color: var(--color-text-muted); }
+  .rfq__safety { margin-block-start: var(--space-6); }
+</style>

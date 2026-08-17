@@ -1,0 +1,43 @@
+---
+/**
+ * Safety and technical-documentation callout (§8.4.8, Appendix B).
+ * Renders the canonical note. It is a publication safeguard, styled as a
+ * standing condition — not an error, and not a warning about the product.
+ */
+import { SAFETY_NOTE } from "../../lib/safety";
+
+interface Props { note?: string; heading?: string; compact?: boolean }
+const {
+  note = SAFETY_NOTE,
+  heading = "Technical and safety documentation",
+  compact = false,
+} = Astro.props;
+---
+
+<aside class:list={["safety", compact && "safety--compact"]} aria-labelledby="safety-h">
+  <h2 id="safety-h" class="t-eyebrow safety__heading">{heading}</h2>
+  <p class="safety__body">{note}</p>
+  {!compact && (
+    <p class="t-small safety__more">
+      Feytom publishes technical data only where manufacturer documentation
+      supports it. <a href="/product-safety/" class="link">How we handle specifications and documentation</a>.
+    </p>
+  )}
+</aside>
+
+<style>
+  .safety {
+    border: var(--rule) solid var(--color-border);
+    border-inline-start: var(--rule-heavy) solid var(--color-heading);
+    background: var(--color-bg-subtle);
+    padding: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .safety__heading { color: var(--color-heading); margin: 0; }
+  .safety__body { margin: 0; max-width: var(--measure); }
+  .safety--compact .safety__body { font-size: var(--text-sm); }
+  .safety__more { margin: 0; color: var(--color-text-muted); }
+</style>

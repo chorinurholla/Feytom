@@ -1,0 +1,106 @@
+---
+/**
+ * Contact (§8.9). "Display only verified contact channels."
+ *
+ * No telephone, email or address has been verified, so none is shown. Rather
+ * than an empty page or an invented inbox, this states the service area, states
+ * plainly that direct channels are not yet published, and routes to the quote
+ * form — which is currently the only honest route to Feytom.
+ *
+ * No response-time expectation is stated: §8.9 permits one only if approved.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/global/Breadcrumbs.astro";
+import SectionIntro from "../components/content/SectionIntro.astro";
+import { ORGANIZATION, breadcrumbList } from "../lib/seo";
+const crumbs = [{ label: "Home", href: "/" }, { label: "Contact" }];
+---
+<BaseLayout
+  title="Contact Feytom | Cargo Securement & Industrial Supply"
+  description="Contact Feytom LLC about cargo-securement, warehouse and industrial supplies. Serving customers across the United States. Send a quote request with your product and quantity."
+  current="/contact"
+  schema={[ORGANIZATION, breadcrumbList(crumbs)]}
+>
+  <div class="container"><Breadcrumbs crumbs={crumbs} /></div>
+
+  <section class="section section--tight-top" aria-labelledby="contact-h">
+    <div class="container contact">
+      <SectionIntro
+        id="contact-h" level={1}
+        eyebrow="Contact"
+        heading="Get in touch"
+        body="Feytom LLC serves customers across the United States. The quickest route to an answer is a quote request with the product, quantity and delivery location."
+      />
+
+      <div class="contact__cols">
+        <div class="contact__main">
+          <h2 class="t-h2">Send a request</h2>
+          <p class="t-body">
+            Include the product, the quantity you order in and the delivery ZIP
+            code or city and state. That is enough for us to come back with pricing
+            and availability without a round of questions first.
+          </p>
+          <p class="contact__cta">
+            <a href="/request-a-quote/" class="btn btn--primary">Request a Quote</a>
+          </p>
+
+          <h2 class="t-h2">Technical documentation</h2>
+          <p class="t-body">
+            If you need manufacturer documentation before ordering, say so in your
+            request and name the application. See
+            <a href="/product-safety/" class="link">how we handle specifications and documentation</a>.
+          </p>
+        </div>
+
+        <aside class="contact__panel" aria-labelledby="channels-h">
+          <h2 id="channels-h" class="t-eyebrow contact__panel-h">Direct channels</h2>
+          <p class="t-body contact__pending">
+            Telephone and email are not published yet.
+          </p>
+          <p class="t-small contact__why">
+            We publish a channel once it is verified and monitored. Listing an
+            address or number that nobody answers would waste your time, so the
+            quote form is the only route we are offering today. Direct channels
+            will appear here as soon as they are confirmed.
+          </p>
+          <hr class="rule contact__rule" />
+          <dl class="speclist">
+            <div class="speclist__row">
+              <dt class="speclist__label">Company</dt>
+              <dd class="speclist__value">Feytom LLC</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Service area</dt>
+              <dd class="speclist__value">United States, nationwide</dd>
+            </div>
+            <div class="speclist__row">
+              <dt class="speclist__label">Customers</dt>
+              <dd class="speclist__value">Business and trade</dd>
+            </div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact__cols { display: grid; gap: var(--space-6); grid-template-columns: 1fr; }
+  @media (min-width: 62em) {
+    .contact__cols { grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); gap: var(--space-8); align-items: start; }
+  }
+  .contact__main { display: flex; flex-direction: column; gap: var(--space-2); }
+  .contact__main h2 { margin-block-start: var(--space-3); }
+  .contact__main h2:first-child { margin-block-start: 0; }
+  .contact__cta { margin: var(--space-1) 0 0; }
+  .contact__panel {
+    background: var(--color-bg-subtle);
+    border-block-start: var(--rule-heavy) solid var(--color-pending);
+    padding: var(--space-2);
+    display: flex; flex-direction: column; gap: var(--space-1);
+  }
+  .contact__panel-h { color: var(--color-heading); margin: 0; }
+  .contact__pending { margin: 0; font-weight: 600; color: var(--color-pending); }
+  .contact__why { margin: 0; color: var(--color-text-muted); }
+  .contact__rule { margin-block: var(--space-1); }
+</style>

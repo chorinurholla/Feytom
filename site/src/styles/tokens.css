@@ -1,0 +1,135 @@
+/* =============================================================
+   Feytom — Design tokens
+   Source of truth: Feytom Website Taxonomy & Build Brief v1.0, §10
+   Overrides are recorded in the project decision log, never silent.
+   ============================================================= */
+
+:root {
+  /* ---------- Brand palette (verbatim from §10.2) ---------- */
+  --feytom-navy: #102a43;
+  --feytom-orange: #f36c21;
+  --feytom-iron: #20272d;
+  --feytom-steel: #7a8793;
+  --feytom-galvanized: #dce2e7;
+  --feytom-sand: #f4f1ea;
+  --feytom-white: #ffffff;
+
+  /* ---------- Semantic colour (verbatim from §10.2) ---------- */
+  --color-bg: var(--feytom-white);
+  --color-bg-subtle: var(--feytom-sand);
+  --color-text: var(--feytom-iron);
+  --color-text-muted: #52616d;
+  --color-heading: var(--feytom-navy);
+  --color-border: var(--feytom-galvanized);
+  --color-action: var(--feytom-orange);
+  --color-focus: #0067b1;
+
+  /* Addition: --color-border is Galvanized at 1.31:1 on white — fine for a
+     decorative hairline, but it CANNOT be the perceivable boundary of a form
+     control (WCAG 2.2 SC 1.4.11 requires 3:1). Anything a user must see in
+     order to operate the interface uses the -strong pair instead. */
+  --color-border-strong: var(--feytom-steel); /* 3.67:1 on white */
+  --color-border-inverse-strong: #6f8aa6; /* measured against navy in the gate */
+
+  /* DECISION D7c — token override.
+     §10.2 sets --color-action-text: #FFFFFF, but §10.2 also instructs
+     "use dark text on orange when white text fails at a given size".
+     Measured: #FFFFFF on #F36C21 = 3.01:1 (fails AA normal text).
+                #20272D on #F36C21 = 5.02:1 (passes AA normal text).
+     Iron is therefore the default label colour on orange fills. */
+  --color-action-text: var(--feytom-iron);
+
+  /* ---------- Derived surfaces (additions, documented) ---------- */
+  --color-bg-inverse: var(--feytom-navy);
+  --color-bg-inverse-deep: #0b1c2e; /* hero base, darker than navy for strap contrast */
+  --color-text-inverse: var(--feytom-white);
+  --color-text-inverse-muted: #a9b8c6; /* 7.9:1 on navy — AA normal text */
+  --color-border-inverse: #2b4560;
+  /* Hover BRIGHTENS rather than darkens. With an Iron label (D7c), darkening
+     the fill lowers contrast — the conventional darken-on-hover measured
+     3.95:1 and failed the gate. #ff7a33 measures 5.82:1 with Iron. */
+  --color-action-hover: #ff7a33;
+  /* Active returns to the base fill and shifts 1px — no new colour pairing. */
+  --color-action-active: var(--feytom-orange);
+  --color-focus-inverse: #7fc4ff; /* focus ring that survives dark surfaces */
+
+  /* ---------- Status ---------- */
+  --color-success: #1c6b3f;
+  --color-warning: #8a5a12;
+  --color-error: #a32319;
+  --color-pending: #6b5a2e; /* "verification pending" specs — never styled as an error */
+
+  /* ---------- Typography ---------- */
+  --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue Condensed",
+    sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Arial,
+    sans-serif;
+
+  /* Scale — §10.3 verbatim */
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.375rem;
+  --text-2xl: clamp(1.75rem, 3vw, 2.5rem);
+  --text-hero: clamp(2.75rem, 7vw, 5.75rem);
+  /* Addition: a step between --text-xl and --text-2xl for section headings */
+  --text-3xl: clamp(1.5rem, 2.2vw, 1.875rem);
+
+  --leading-tight: 0.92; /* condensed display only */
+  --leading-snug: 1.15;
+  --leading-body: 1.6;
+  --tracking-display: 0.005em;
+  --tracking-eyebrow: 0.14em;
+  --measure: 62ch; /* max reading width */
+  --measure-narrow: 48ch; /* product detail body */
+
+  /* ---------- Spacing — 8px base (§10.5) ---------- */
+  --space-0-5: 0.25rem; /* 4 — half-step */
+  --space-1: 0.5rem; /* 8 */
+  --space-1-5: 0.75rem; /* 12 — half-step */
+  --space-2: 1rem; /* 16 */
+  --space-3: 1.5rem; /* 24 */
+  --space-4: 2rem; /* 32 */
+  --space-5: 2.5rem; /* 40 */
+  --space-6: 3rem; /* 48 */
+  --space-8: 4rem; /* 64 */
+  --space-10: 5rem; /* 80 */
+  --space-12: 6rem; /* 96 */
+  --space-16: 8rem; /* 128 */
+
+  --section-y: clamp(var(--space-6), 8vw, var(--space-12));
+
+  /* ---------- Layout ---------- */
+  --container: 78rem; /* 1248px — inside the 1200–1280 range in §10.5 */
+  --container-narrow: 48rem;
+  --gutter: clamp(1.25rem, 4vw, 2.5rem);
+
+  /* ---------- Shape (§10.4: modest radii, 2–6px) ---------- */
+  --radius-sm: 2px;
+  --radius: 4px;
+  --radius-lg: 6px;
+  --clip: 14px; /* clipped-corner size for industrial plates */
+  --rule: 1px;
+  --rule-heavy: 3px;
+
+  /* ---------- Elevation — restrained; industrial, not soft ---------- */
+  --shadow-1: 0 1px 2px rgb(16 42 67 / 0.08);
+  --shadow-2: 0 6px 20px rgb(16 42 67 / 0.14);
+
+  /* ---------- Motion ---------- */
+  --ease: cubic-bezier(0.2, 0, 0.1, 1);
+  --dur-fast: 120ms;
+  --dur: 180ms;
+
+  /* ---------- Focus ---------- */
+  --focus-width: 3px;
+  --focus-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 0ms;
+    --dur: 0ms;
+  }
+}

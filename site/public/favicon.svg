@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Feytom">
+  <title>Feytom</title>
+  <path d="M0 0 H64 V50 L50 64 H0 Z" fill="#102A43"/>
+  <path d="M64 50 L50 64 H64 Z" fill="#F36C21"/>
+  <g fill="none" stroke="#FFFFFF" stroke-linecap="butt" stroke-linejoin="miter">
+    <path d="M20 13 V51" stroke-width="9"/>
+    <path d="M20 17.5 H45.5 V29" stroke-width="9"/>
+    <path d="M20 33.5 H34" stroke-width="8"/>
+  </g>
+</svg>

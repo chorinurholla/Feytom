@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionIntro from "../components/content/SectionIntro.astro";
+import { getPopulatedFamilies } from "../lib/catalog";
+const families = await getPopulatedFamilies();
+---
+<BaseLayout
+  title="Page not found | Feytom"
+  description="The page you requested could not be found. Browse the Feytom cargo-securement catalog or request a quote."
+  noindex
+>
+  <section class="section" aria-labelledby="nf-h">
+    <div class="container nf">
+      <SectionIntro
+        id="nf-h" level={1}
+        eyebrow="404"
+        heading="That page is not here"
+        body="The address may have changed, or the page may never have existed. These are the places worth trying."
+      />
+      <ul class="nf__list">
+        <li><a href="/products/" class="link">The full catalog</a></li>
+        {families.map(({ family }) => (
+          <li><a href={`/products/?family=${family.data.slug}`} class="link">{family.data.name}</a></li>
+        ))}
+        <li><a href="/product-safety/" class="link">Product safety and documentation</a></li>
+        <li><a href="/request-a-quote/" class="link">Request a quote</a></li>
+      </ul>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .nf__list { margin: 0; padding-inline-start: var(--space-3); display: flex; flex-direction: column; gap: var(--space-1); }
+</style>

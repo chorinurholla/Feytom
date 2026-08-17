@@ -1,0 +1,62 @@
+---
+/**
+ * SCAFFOLD ONLY — Privacy Notice.
+ *
+ * §8.10: legal and policy content requires owner-approved text before public
+ * launch. Claude may scaffold the route but must mark it noindex and keep it out
+ * of production navigation. This page is therefore:
+ *   - noindex, nofollow
+ *   - absent from the header and the footer
+ *   - explicit that no approved text exists, rather than filled with boilerplate
+ *
+ * §8.8 also blocks production quote submissions until this text is approved.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionIntro from "../components/content/SectionIntro.astro";
+---
+<BaseLayout
+  title="Privacy Notice | Feytom"
+  description="Privacy Notice for Feytom LLC. This page is a scaffold and does not yet contain approved text."
+  noindex
+>
+  <section class="section" aria-labelledby="scaffold-h">
+    <div class="container scaffold">
+      <SectionIntro
+        id="scaffold-h" level={1}
+        eyebrow="Not yet published"
+        heading="Privacy Notice"
+      />
+      <div class="scaffold__note" role="note">
+        <p class="t-body">
+          <strong>This page has no approved content.</strong> Feytom's privacy notice
+          requires owner and legal review before it can be published, and writing
+          placeholder legal text would be worse than publishing nothing.
+        </p>
+        <p class="t-body">
+          The route exists so that it can be filled and linked in one step once
+          approved text is supplied. Until then it is marked <code>noindex</code>
+          and is deliberately absent from site navigation.
+        </p>
+        <p class="t-body">
+          <a href="/" class="link">Return to the home page</a>
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .scaffold__note {
+    border: var(--rule) solid var(--color-border);
+    border-inline-start: var(--rule-heavy) solid var(--color-pending);
+    background: var(--color-bg-subtle);
+    padding: var(--space-3);
+    display: flex; flex-direction: column; gap: var(--space-2);
+    max-width: var(--measure);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, monospace; font-size: .9em;
+    background: var(--color-bg); border: var(--rule) solid var(--color-border);
+    padding: .1em .35em; border-radius: var(--radius-sm);
+  }
+</style>

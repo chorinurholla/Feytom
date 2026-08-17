@@ -1,0 +1,58 @@
+---
+/**
+ * Paired orange diagonal "load straps" (§10.4) — the recurring graphic device.
+ *
+ * Two hard rules, both enforced by the layout rather than by care:
+ *
+ * 1. NEVER BEHIND TEXT. White on Signal Orange measures 3.01:1, so any copy
+ *    crossing a strap would fail SC 1.4.3. This component fills its positioned
+ *    parent, and the parent must be a column that contains no text — see
+ *    .hero__aside. Below that breakpoint the straps are removed, not shrunk.
+ *
+ * 2. NOT A BACKGROUND. §10.2: orange is "an action and identification color,
+ *    not a large background default". These are straps — narrow, weighted,
+ *    unequal — not a diagonal wash.
+ */
+interface Props {
+  angle?: number;
+  class?: string;
+}
+const { angle = 16, class: className = "" } = Astro.props;
+---
+
+<div class:list={["strap", className]} style={`--strap-angle:${angle}deg`} aria-hidden="true">
+  <span class="strap__band strap__band--load"></span>
+  <span class="strap__band strap__band--keeper"></span>
+</div>
+
+<style>
+  .strap {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .strap__band {
+    position: absolute;
+    /* Overshoot generously so the bands are always clipped by the parent's
+       edges — a band that ends inside the frame reads as a broken shape,
+       not as a strap running past. */
+    top: -90%;
+    height: 280%;
+    background: var(--color-action);
+    transform: rotate(var(--strap-angle));
+    transform-origin: center;
+  }
+  /* A strap and its keeper — unequal weights, not a symmetrical pair. */
+  /* Positions are chosen so that at the design widths the rotated bands leave
+     the frame through the TOP and BOTTOM edges, not the side. A band cut by a
+     vertical edge reads as a broken arrow rather than a strap running past. */
+  .strap__band--load {
+    right: 60%;
+    width: clamp(13px, 1.7vw, 24px);
+  }
+  .strap__band--keeper {
+    right: 40%;
+    width: clamp(5px, 0.65vw, 9px);
+  }
+</style>

@@ -1,0 +1,15 @@
+# D5 — one primary category, so /products/ is the catalog index and the
+# category path redirects to it. Remove this line when a second category
+# launches; product URLs are unaffected either way.
+/products/cargo-securement            /products/   301
+/products/cargo-securement/           /products/   301
+
+# D7b — family paths were never published as standalone pages; send any
+# inbound link to the equivalent filtered state.
+/products/cargo-securement/lashing    /products/?family=lashing   301
+/products/cargo-securement/chains     /products/?family=chains    301
+/products/cargo-securement/rope       /products/?family=rope      301
+
+# D7 — Resources hub was collapsed; product safety moved up a level.
+/resources/product-safety             /product-safety/   301
+/resources                            /product-safety/   301

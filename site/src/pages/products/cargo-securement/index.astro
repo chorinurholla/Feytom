@@ -1,0 +1,9 @@
+---
+/**
+ * D5 — with a single primary category, this page would duplicate /products/.
+ * Astro emits a 301 for this route on hosts that read the redirects map, and
+ * public/_redirects covers Netlify/Cloudflare. This file exists so the route
+ * never 404s on a host that supports neither.
+ */
+export const prerender = true;
+return Astro.redirect("/products/", 301);

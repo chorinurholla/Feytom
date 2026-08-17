@@ -1,0 +1,32 @@
+---
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  body?: string;
+  level?: 1 | 2;
+  id?: string;
+}
+const { eyebrow, heading, body, level = 2, id } = Astro.props;
+const H = `h${level}` as "h1" | "h2";
+---
+<div class="sintro">
+  {eyebrow && <p class="t-eyebrow sintro__eyebrow">{eyebrow}</p>}
+  <H id={id} class={level === 1 ? "t-h1" : "t-h2"}>{heading}</H>
+  {body && <p class="t-lead sintro__body">{body}</p>}
+</div>
+
+<style>
+  .sintro {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    margin-block-end: var(--space-4);
+  }
+  /* Orange is 3.01:1 on white — it cannot be a 12px eyebrow on a light
+     surface. Muted on light, orange on dark. */
+  .sintro__eyebrow { color: var(--color-text-muted); }
+  :global(.section--inverse) .sintro__eyebrow,
+  :global(.on-dark) .sintro__eyebrow { color: var(--color-action); }
+  .sintro__body { color: var(--color-text-muted); margin: 0; }
+  :global(.section--inverse) .sintro__body { color: var(--color-text-inverse-muted); }
+</style>

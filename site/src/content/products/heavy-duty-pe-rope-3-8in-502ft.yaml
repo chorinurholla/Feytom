@@ -1,0 +1,55 @@
+# Source: Feytom Website Taxonomy v1.0 Appendix A + FEYTOM LLC Product List
+# PDF (16 Aug 2026). Both agree on every value below.
+id: feytom-per-38-502
+status: active
+name: Heavy-Duty PE Rope
+slug: heavy-duty-pe-rope-3-8in-502ft
+eyebrow: Cargo Securement
+primaryCategory: Cargo Securement
+productFamily: rope
+shortDescription: Strong, lightweight polyethylene rope for cargo handling, securing loads, warehouse operations, marine use and general industrial applications.
+sizeSummary: 3/8 in x 502 ft (153 m)
+
+applications:
+  - Cargo handling
+  - Securing loads
+  - Warehouse operations
+  - Marine use
+  - General industrial applications
+
+specifications:
+  - label: Material
+    value: Polyethylene (PE)
+    sourceStatus: confirmed
+  - label: Diameter
+    value: 3/8 inch
+    sourceStatus: confirmed
+  - label: Length
+    value: Approximately 502 feet per roll (153 m)
+    sourceStatus: confirmed
+  - label: Packaging
+    value: Roll
+    sourceStatus: confirmed
+
+packaging:
+  type: Roll
+
+commerce:
+  mode: request_quote
+  inventoryStatus: contact_for_availability
+
+safety:
+  withheldClaims:
+    - >-
+      Tensile strength, working load limit, UV resistance, rope construction and
+      marine certification are all withheld pending manufacturer documentation
+      (§5.3). "Marine use" is published as a possible application only, not as a
+      marine approval.
+
+seo:
+  title: Heavy-Duty PE Rope, 3/8 in x 502 ft | Feytom
+  description: 3/8 in x 502 ft polyethylene rope on the roll, for cargo handling, warehouse operations, marine use and general industrial work. Request pricing from Feytom.
+
+relatedProducts:
+  - cargo-lashing-belt-2in-328ft
+  - grade-43-high-test-chain-5-16in-551ft

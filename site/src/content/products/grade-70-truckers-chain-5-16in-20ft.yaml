@@ -1,0 +1,62 @@
+# Source: Feytom Website Taxonomy v1.0 Appendix A (rank 3) — this record
+# deliberately DIFFERS from the FEYTOM LLC Product List PDF (rank 5).
+# Per §20 the taxonomy outranks the product-list PDF. Two claims present in
+# the PDF are withheld; see safety.withheldClaims below.
+id: feytom-g70-516-20
+status: active
+name: Grade 70 Trucker's Chain
+slug: grade-70-truckers-chain-5-16in-20ft
+eyebrow: Cargo Securement
+primaryCategory: Cargo Securement
+productFamily: chains
+shortDescription: Grade 70 transport chain for cargo securement, trucking and heavy-duty industrial applications.
+sizeSummary: 5/16 in x 20 ft (6 m)
+
+applications:
+  - Cargo securement
+  - Trucking
+  - Heavy-duty industrial applications
+
+specifications:
+  - label: Chain grade
+    value: Grade 70
+    sourceStatus: confirmed
+  - label: Diameter
+    value: 5/16 inch
+    sourceStatus: confirmed
+  - label: Length
+    value: Approximately 20 feet (6 m)
+    sourceStatus: confirmed
+  - label: Packaging
+    value: Bag
+    sourceStatus: confirmed
+
+packaging:
+  type: Bag
+
+commerce:
+  mode: request_quote
+  inventoryStatus: contact_for_availability
+
+safety:
+  withheldClaims:
+    - >-
+      "High-strength" — the Product List PDF opens this description with
+      "High-strength Grade 70 transport chain". Withheld: a strength claim
+      requires manufacturer documentation (§3.6). The taxonomy wording is used
+      instead.
+    - >-
+      "Towing" — the Product List PDF lists towing among the applications.
+      Withheld: §4 permits towing only where manufacturer documentation supports
+      the application. Publish once documentation is supplied.
+    - >-
+      Working load limit, breaking strength, finish, hook type and regulatory
+      compliance are all withheld pending manufacturer documentation (§5.3).
+
+seo:
+  title: Grade 70 Trucker's Chain, 5/16 in x 20 ft | Feytom
+  description: 5/16 in x 20 ft Grade 70 transport chain by the bag, for cargo securement, trucking and heavy-duty industrial work. Request bulk pricing from Feytom.
+
+relatedProducts:
+  - grade-43-high-test-chain-5-16in-551ft
+  - cargo-lashing-belt-2in-328ft

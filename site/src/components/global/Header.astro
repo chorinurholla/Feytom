@@ -1,0 +1,257 @@
+---
+/**
+ * Site header.
+ *
+ * Nav is D7: Products · Industries · About · Contact, plus the quote action.
+ * Product Safety is linked at the point of need (product pages, footer) rather
+ * than behind a "Resources" label a fleet buyer wouldn't click.
+ *
+ * Progressive enhancement, in this order:
+ *   - No JavaScript: the nav is a plain list in normal flow and the toggle is
+ *     never rendered visible. Everything is reachable.
+ *   - JavaScript: the toggle appears below 60em and collapses the nav.
+ *   - 60em and up: the nav is always an inline row, JS or not.
+ * The quote action lives outside the collapsible region, so it is never hidden
+ * by the collapse (§14).
+ */
+import Logo from "./Logo.astro";
+import UtilityBar from "./UtilityBar.astro";
+
+interface Props {
+  current?: string;
+}
+const { current } = Astro.props;
+
+const nav = [
+  { label: "Products", href: "/products" },
+  { label: "Industries", href: "/industries" },
+  { label: "About", href: "/about" },
+  { label: "Contact", href: "/contact" },
+];
+---
+
+<header class="header">
+  {/* Inside the banner landmark so that no page content sits outside a
+      landmark region (axe "region" rule / SC 1.3.1 navigation semantics). */}
+  <UtilityBar />
+
+  <div class="container header__inner">
+    <a href="/" class="header__brand" aria-label="Feytom — home">
+      {/* Both marks are rendered and swapped by CSS: at 320px a full lockup
+          plus a menu toggle plus the quote action will not fit on one row,
+          and the quote action is the one that may not be dropped (§14). */}
+      <span class="header__logo header__logo--icon">
+        <Logo variant="icon" height={36} decorative />
+      </span>
+      <span class="header__logo header__logo--lockup">
+        <Logo variant="full-colour" height={36} decorative />
+      </span>
+    </a>
+
+    <button
+      type="button"
+      class="nav-toggle btn btn--secondary btn--sm"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+    >
+      <svg width="18" height="14" viewBox="0 0 18 14" aria-hidden="true" focusable="false">
+        <g fill="currentColor">
+          <rect y="0" width="18" height="2.5"></rect>
+          <rect y="5.75" width="18" height="2.5"></rect>
+          <rect y="11.5" width="18" height="2.5"></rect>
+        </g>
+      </svg>
+      <span class="nav-toggle__label">Menu</span>
+    </button>
+
+    <nav id="primary-nav" class="nav" aria-label="Primary">
+      <ul class="nav__list">
+        {
+          nav.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                class="nav__link"
+                aria-current={current === item.href ? "page" : undefined}
+              >
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <a href="/request-a-quote" class="btn btn--secondary btn--sm header__cta">
+      Request a Quote
+    </a>
+  </div>
+</header>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>(".nav-toggle");
+  const nav = document.getElementById("primary-nav");
+
+  if (toggle && nav) {
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute("aria-expanded", String(open));
+      nav.classList.toggle("is-open", open);
+    };
+    toggle.addEventListener("click", () =>
+      setOpen(toggle.getAttribute("aria-expanded") !== "true")
+    );
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && toggle.getAttribute("aria-expanded") === "true") {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+</script>
+
+<style>
+  .header {
+    background: var(--color-bg);
+    border-bottom: var(--rule) solid var(--color-border);
+    position: relative;
+    z-index: 20;
+  }
+  .header__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-1);
+    padding-block: var(--space-1);
+  }
+  .header__brand {
+    display: inline-flex;
+    margin-inline-end: auto;
+  }
+  .header__logo {
+    display: inline-flex;
+    line-height: 0;
+  }
+  .header__logo--lockup {
+    display: none;
+  }
+  @media (min-width: 30em) {
+    .header__logo--icon {
+      display: none;
+    }
+    .header__logo--lockup {
+      display: inline-flex;
+    }
+  }
+
+  .header__cta {
+    white-space: nowrap;
+  }
+
+  /* ---------- toggle: only meaningful once JS is running ---------- */
+  .nav-toggle {
+    display: none;
+  }
+  :global(html.js) .nav-toggle {
+    display: inline-flex;
+  }
+  /* Below 30em the label is hidden VISUALLY but not from assistive tech —
+     display:none would leave the toggle with no accessible name at all. */
+  .nav-toggle__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+  @media (min-width: 30em) {
+    .nav-toggle__label {
+      position: static;
+      width: auto;
+      height: auto;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+    }
+  }
+
+  /* ---------- nav: no-JS default is a plain wrapped list ---------- */
+  .nav {
+    flex-basis: 100%;
+  }
+  .nav__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+  }
+  .nav__link {
+    display: flex;
+    align-items: center;
+    min-height: 44px;
+    padding-block: var(--space-1);
+    font-weight: 600;
+    text-decoration: none;
+    color: var(--color-heading);
+    border-bottom: var(--rule) solid var(--color-border);
+  }
+  .nav__link:hover {
+    color: var(--color-action);
+  }
+  /* Current page is marked by a bar as well as weight — never colour alone. */
+  .nav__link[aria-current="page"] {
+    box-shadow: inset 3px 0 0 var(--color-action);
+    padding-inline-start: var(--space-1);
+  }
+
+  /* ---------- with JS, below 60em: collapse into a panel ---------- */
+  @media (max-width: 59.99em) {
+    :global(html.js) .nav {
+      display: none;
+      position: absolute;
+      inset-inline: 0;
+      top: 100%;
+      flex-basis: auto;
+      background: var(--color-bg);
+      border-bottom: var(--rule) solid var(--color-border);
+      box-shadow: var(--shadow-2);
+    }
+    :global(html.js) .nav.is-open {
+      display: block;
+    }
+    :global(html.js) .nav__list {
+      padding: var(--space-1) var(--gutter) var(--space-2);
+    }
+  }
+
+  /* ---------- 60em and up: always an inline row ---------- */
+  @media (min-width: 60em) {
+    .nav-toggle,
+    :global(html.js) .nav-toggle {
+      display: none;
+    }
+    .nav {
+      flex-basis: auto;
+      margin-inline-end: var(--space-3);
+    }
+    .nav__list {
+      flex-direction: row;
+      gap: var(--space-3);
+    }
+    .nav__link {
+      border: 0;
+      min-height: 0;
+    }
+    .nav__link[aria-current="page"] {
+      box-shadow: inset 0 -3px 0 var(--color-action);
+      padding-inline-start: 0;
+    }
+    .header__inner {
+      gap: var(--space-2);
+      padding-block: var(--space-2);
+    }
+  }
+</style>

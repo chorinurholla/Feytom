@@ -1,0 +1,65 @@
+---
+/**
+ * Quote submitted (§8.8: "After submission, show a confirmation state").
+ *
+ * This page is only ever reached by a real POST that the destination accepted —
+ * Netlify redirects here after it has stored the submission. It is noindex so it
+ * cannot be found cold, and it makes no promise about response time, because
+ * §8.9 permits one only if approved.
+ */
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionIntro from "../../components/content/SectionIntro.astro";
+import SafetyNote from "../../components/content/SafetyNote.astro";
+---
+<BaseLayout
+  title="Request received | Feytom"
+  description="Your quote request has been received by Feytom."
+  noindex
+>
+  <section class="section section--tight-top" aria-labelledby="sent-h">
+    <div class="container sent">
+      <SectionIntro
+        id="sent-h" level={1}
+        eyebrow="Request received"
+        heading="Thank you — we have your request"
+      />
+      <div class="sent__panel">
+        <p class="t-lead sent__lead">
+          Your request reached us. Nothing further is needed from you right now.
+        </p>
+        <h2 class="t-eyebrow sent__h">What happens next</h2>
+        <ol class="sent__steps">
+          <li>We check what can be supplied against the quantity you gave.</li>
+          <li>We come back with pricing and availability.</li>
+          <li>If you asked for manufacturer documentation, we send what we hold — or tell you we do not hold it.</li>
+        </ol>
+        <p class="t-small sent__nb">
+          If you need to add anything, send a second request rather than waiting —
+          include the same company name so we can match the two.
+        </p>
+      </div>
+
+      <p class="sent__actions">
+        <a href="/products/" class="btn btn--secondary">Back to the catalog</a>
+      </p>
+
+      <div class="sent__safety"><SafetyNote compact /></div>
+    </div>
+  </section>
+</BaseLayout>
+<style>
+  .sent__panel {
+    border-block-start: var(--rule-heavy) solid var(--color-success);
+    background: var(--color-bg-subtle);
+    padding: var(--space-3);
+    display: flex; flex-direction: column; gap: var(--space-2);
+    max-width: var(--measure);
+  }
+  .sent__lead { margin: 0; }
+  .sent__h { color: var(--color-heading); margin: 0; }
+  .sent__steps { margin: 0; padding-inline-start: var(--space-3); color: var(--color-text-muted); }
+  .sent__steps li { margin-block-end: var(--space-0-5); }
+  .sent__nb { margin: 0; color: var(--color-text-muted); }
+  .sent__actions { margin-block-start: var(--space-4); }
+  .sent__safety { margin-block-start: var(--space-6); }
+</style>

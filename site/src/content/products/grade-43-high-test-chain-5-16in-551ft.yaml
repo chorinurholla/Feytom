@@ -1,0 +1,52 @@
+# Source: Feytom Website Taxonomy v1.0 Appendix A + FEYTOM LLC Product List
+# PDF (16 Aug 2026). Both agree on every value below.
+id: feytom-g43-516-551
+status: active
+name: Grade 43 High-Test Chain
+slug: grade-43-high-test-chain-5-16in-551ft
+eyebrow: Cargo Securement
+primaryCategory: Cargo Securement
+productFamily: chains
+shortDescription: Durable Grade 43 high-test chain for general cargo securement, warehouse operations, industrial use and material handling.
+sizeSummary: 5/16 in x 551 ft (168 m)
+
+applications:
+  - General cargo securement
+  - Warehouse operations
+  - Industrial use
+  - Material handling
+
+specifications:
+  - label: Chain grade
+    value: Grade 43
+    sourceStatus: confirmed
+  - label: Diameter
+    value: 5/16 inch
+    sourceStatus: confirmed
+  - label: Length
+    value: Approximately 551 feet per drum (168 m)
+    sourceStatus: confirmed
+  - label: Packaging
+    value: Drum
+    sourceStatus: confirmed
+
+packaging:
+  type: Drum
+
+commerce:
+  mode: request_quote
+  inventoryStatus: contact_for_availability
+
+safety:
+  withheldClaims:
+    - >-
+      Working load limit, breaking strength, finish and regulatory compliance are
+      withheld pending manufacturer documentation (§5.3).
+
+seo:
+  title: Grade 43 High-Test Chain, 5/16 in x 551 ft | Feytom
+  description: 5/16 in x 551 ft Grade 43 high-test chain by the drum, for cargo securement, warehouse operations and material handling. Request bulk pricing from Feytom.
+
+relatedProducts:
+  - grade-70-truckers-chain-5-16in-20ft
+  - cargo-lashing-belt-2in-328ft

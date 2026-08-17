@@ -1,0 +1,27 @@
+---
+/** Value-pillar strip (§8.1.5). Three pillars, verbatim intent from §3.4. */
+const pillars = [
+  { title: "Dependable sourcing", body: "Products selected for real transportation, warehouse and industrial work — not a catalogue padded with lines we cannot supply." },
+  { title: "Clear specifications", body: "Dimensions, material, grade and packaging are stated on every product page so you can compare before you enquire." },
+  { title: "Straightforward service", body: "Send a product, a quantity and a delivery location. No account required, no marketing sequence before an answer." },
+];
+---
+<ul class="pillars grid grid--3">
+  {pillars.map((p) => (
+    <li class="pillar">
+      <h3 class="t-h3 pillar__title">{p.title}</h3>
+      <p class="pillar__body">{p.body}</p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .pillars { list-style: none; margin: 0; padding: 0; }
+  .pillar {
+    border-block-start: var(--rule-heavy) solid var(--color-action);
+    padding-block-start: var(--space-2);
+    display: flex; flex-direction: column; gap: var(--space-1);
+  }
+  .pillar__title { margin: 0; }
+  .pillar__body { margin: 0; color: var(--color-text-muted); }
+</style>

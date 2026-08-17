@@ -1,0 +1,99 @@
+---
+/**
+ * Industries (§8.5) — D6: ONE page with three deep-linkable sections.
+ *
+ * Deliberately does NOT list products per industry. All four launch products
+ * are described for transportation, warehouse and industrial use alike, and
+ * §8.5 requires industry pages to link "only to appropriate products". Without
+ * manufacturer documentation we cannot evidence that split, so implying one
+ * would be a suitability claim we cannot support.
+ */
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Breadcrumbs from "../components/global/Breadcrumbs.astro";
+import SectionIntro from "../components/content/SectionIntro.astro";
+import SafetyNote from "../components/content/SafetyNote.astro";
+import QuoteCtaPanel from "../components/content/QuoteCtaPanel.astro";
+import { getCollection } from "astro:content";
+import { ORGANIZATION, breadcrumbList } from "../lib/seo";
+
+const industries = (await getCollection("industries")).sort(
+  (a, b) => a.data.order - b.data.order
+);
+const crumbs = [{ label: "Home", href: "/" }, { label: "Industries" }];
+---
+<BaseLayout
+  title="Industries We Supply | Feytom"
+  description="Feytom supplies cargo-securement and industrial products to transportation and trucking, warehouse and distribution, and industrial and material-handling operations across the United States."
+  current="/industries"
+  schema={[ORGANIZATION, breadcrumbList(crumbs)]}
+>
+  <div class="container"><Breadcrumbs crumbs={crumbs} /></div>
+
+  <section class="section section--tight-top" aria-labelledby="ind-h">
+    <div class="container">
+      <SectionIntro
+        id="ind-h" level={1}
+        eyebrow="Who we supply"
+        heading="Industries"
+        body="The same four products serve all three of these operations. What changes is the question each one asks of a supplier."
+      />
+
+      <nav class="jump" aria-label="On this page">
+        <ul class="jump__list">
+          {industries.map((i) => (
+            <li><a href={`#${i.data.slug}`} class="jump__link">{i.data.name}</a></li>
+          ))}
+        </ul>
+      </nav>
+
+      <div class="ind__sections">
+        {industries.map((i) => (
+          <section class="ind" id={i.data.slug} aria-labelledby={`${i.data.slug}-h`}>
+            <h2 id={`${i.data.slug}-h`} class="t-h2">{i.data.name}</h2>
+            <p class="ind__q">&ldquo;{i.data.visitorQuestion}&rdquo;</p>
+            <p class="ind__intro">{i.data.intro}</p>
+            <h3 class="t-eyebrow ind__needs-h">What this needs from a supplier</h3>
+            <ul class="ind__needs">
+              {i.data.needs.map((n) => <li>{n}</li>)}
+            </ul>
+            <p class="ind__cta">
+              <a href="/products/" class="btn btn--secondary">See the catalog</a>
+            </p>
+          </section>
+        ))}
+      </div>
+
+      <div class="ind__safety"><SafetyNote /></div>
+    </div>
+  </section>
+
+  <QuoteCtaPanel />
+</BaseLayout>
+
+<style>
+  .jump { margin-block-end: var(--space-6); }
+  .jump__list { display: flex; flex-wrap: wrap; gap: var(--space-1); list-style: none; margin: 0; padding: 0; }
+  .jump__link {
+    display: inline-flex; align-items: center; min-height: 44px; padding: 0 var(--space-2);
+    font-weight: 600; text-decoration: none; color: var(--color-heading);
+    border: var(--rule) solid var(--color-border-strong); border-radius: var(--radius);
+  }
+  .jump__link:hover { border-color: var(--color-heading); background: var(--color-bg-subtle); }
+  .ind__sections { display: flex; flex-direction: column; gap: var(--space-8); }
+  .ind {
+    display: flex; flex-direction: column; gap: var(--space-2);
+    border-block-start: var(--rule-heavy) solid var(--color-action);
+    padding-block-start: var(--space-3);
+    scroll-margin-block-start: var(--space-4);
+  }
+  .ind__q {
+    margin: 0; font-family: var(--font-display); font-size: var(--text-2xl);
+    line-height: var(--leading-snug); color: var(--color-heading); max-width: 30ch;
+  }
+  .ind__intro { margin: 0; color: var(--color-text-muted); max-width: var(--measure); }
+  .ind__needs-h { color: var(--color-text-muted); margin: var(--space-1) 0 0; }
+  .ind__needs { margin: 0; padding-inline-start: var(--space-3); max-width: var(--measure); }
+  .ind__needs li { margin-block-end: var(--space-0-5); }
+  .ind__cta { margin: var(--space-1) 0 0; }
+  .ind__safety { margin-block-start: var(--space-8); }
+</style>
