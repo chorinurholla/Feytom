@@ -1,9 +1,11 @@
 # Feytom — Netlify configuration.
 
 [build]
+  # `command` and `publish` are BOTH resolved relative to `base`, so publish is
+  # "dist", not "site/dist" — the latter resolves to site/site/dist and fails.
   base    = "site"
   command = "npm run build"
-  publish = "site/dist"
+  publish = "dist"
 
 [build.environment]
   NODE_VERSION = "22"

@@ -28,7 +28,7 @@ STAGE="$(mktemp -d)"
 mkdir -p "$STAGE/FEYTOL"
 tar -C "$ROOT" \
     --exclude=node_modules --exclude=dist --exclude=.astro \
-    --exclude='*.zip' \
+    --exclude=.git --exclude='*.zip' \
     -cf - . | tar -C "$STAGE/FEYTOL" -xf -
 rm -f "$OUT"
 ( cd "$STAGE" && zip -qr "$OUT" FEYTOL )
@@ -37,6 +37,11 @@ rm -rf "$STAGE"
 echo "==> $OUT  ($(du -h "$OUT" | cut -f1))"
 echo
 echo "Next: Claude commits this archive to the device folder and unpacks it there."
+echo
+echo "IMPORTANT: .git is NOT synced. The device repo owns the git state (its remote,"
+echo "its branch, its history). Overwriting it would wipe the GitHub remote. After a"
+echo "sync, Tolu commits and pushes from his own Terminal — git cannot be driven over"
+echo "the device bridge, because the mount forbids the unlinks git relies on."
 echo
 echo "NOTE for whoever unpacks it: the device mount disallows unlink, so \`tar -x\`"
 echo "and \`unzip -o\` both FAIL on files that already exist. Unpack to a scratch"
