@@ -1,11 +1,11 @@
 {
-  "_comment": "Every exception to the content guard, with a written reason. Reviewed at each milestone. An entry here is a deliberate decision, not a bypass. The pattern across all of them is the same: these are NEGATIVE uses — the site saying it will not publish a claim, or the Appendix B safeguard warning the reader to verify. A positive claim would not qualify.",
-  "_reviewed": "M2/M4, 16 August 2026",
+  "_comment": "Every exception to the content guard, with a written reason. Reviewed at each milestone. An entry here is a deliberate decision, not a bypass. The pattern across all of them is the same: these are NEGATIVE uses \u2014 the site saying it will not publish a claim, or the Appendix B safeguard warning the reader to verify. A positive claim would not qualify.",
+  "_reviewed": "M2/M4 + D25 packaging-attribution decision, 17 August 2026",
   "exceptions": [
     {
       "file": "src/lib/safety.ts",
       "rule": "wll",
-      "reason": "Appendix B safety note, verbatim and mandated. It instructs the reader to confirm working-load limits against manufacturer documentation — the opposite of asserting one."
+      "reason": "Appendix B safety note, verbatim and mandated. It instructs the reader to confirm working-load limits against manufacturer documentation \u2014 the opposite of asserting one."
     },
     {
       "file": "src/lib/safety.ts",
@@ -30,7 +30,7 @@
     {
       "file": "src/content/products/grade-70-truckers-chain-5-16in-20ft.yaml",
       "rule": "wll",
-      "reason": "safety.withheldClaims audit record listing what is withheld pending manufacturer documentation. Never rendered."
+      "reason": "Two uses now: the withheldClaims audit record, AND the published 4,700 lb working load limit (D25, 17 Aug 2026). Because the keyword rule can no longer tell those apart, the real protection for this file is the guard's provenance check \u2014 a sensitive spec label is rejected unless its sourceStatus is product_packaging or manufacturer_verified."
     },
     {
       "file": "src/content/products/grade-70-truckers-chain-5-16in-20ft.yaml",
@@ -65,22 +65,22 @@
     {
       "file": "src/pages/product-safety.astro",
       "rule": "wll",
-      "reason": "The Product Safety page's whole purpose is to name what Feytom withholds and why (§8.6). Every occurrence is inside a sentence stating the claim is NOT published until documented."
+      "reason": "The Product Safety page's whole purpose is to name what Feytom withholds and why (\u00a78.6). Every occurrence is inside a sentence stating the claim is NOT published until documented."
     },
     {
       "file": "src/pages/product-safety.astro",
       "rule": "breaking-strength",
-      "reason": "As above — named in the list of withheld claims."
+      "reason": "As above \u2014 named in the list of withheld claims."
     },
     {
       "file": "src/pages/product-safety.astro",
       "rule": "rated-capacity",
-      "reason": "As above — named in the list of withheld claims."
+      "reason": "As above \u2014 named in the list of withheld claims."
     },
     {
       "file": "src/pages/product-safety.astro",
       "rule": "certified",
-      "reason": "As above. Includes the sentence 'a marking is not, on its own, a certified rating' — a denial, not an assertion."
+      "reason": "As above. Includes the sentence 'a marking is not, on its own, a certified rating' \u2014 a denial, not an assertion."
     },
     {
       "file": "src/pages/about.astro",
@@ -91,6 +91,21 @@
       "file": "src/pages/about.astro",
       "rule": "certified",
       "reason": "As above, plus a sentence explaining that a certification needing manufacturer documentation is withheld until it is in hand."
+    },
+    {
+      "file": "src/pages/about.astro",
+      "rule": "breaking-strength",
+      "reason": "The 'What we do not claim' list: 'We do not publish breaking strengths, because we hold no documentation for them.' A denial, not an assertion."
+    },
+    {
+      "file": "src/pages/product-safety.astro",
+      "rule": "regulator",
+      "reason": "Explains that the Grade 70 chain is 'marked for DOT transport requirements' and that this is NOT approval by any authority. The distinction is the point of the section."
+    },
+    {
+      "file": "src/content/products/grade-70-truckers-chain-5-16in-20ft.yaml",
+      "rule": "regulator",
+      "reason": "Published as 'Marked for: DOT transport requirements', attributed to the packaging. The packaging's stronger claim ('Meets all Highway Patrol requirements') is recorded in withheldClaims and NOT published."
     }
   ]
 }

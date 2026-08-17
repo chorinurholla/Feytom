@@ -184,8 +184,8 @@ const packagingUnknowns = [
       </section>
 
       <section class="pdp__section" aria-labelledby="docs-h">
-        <h2 id="docs-h" class="sr-only" id="docs-h">Documentation</h2>
-        <SafetyNote />
+        <h2 id="docs-h" class="sr-only">Documentation</h2>
+        <SafetyNote note={d.safety.generalNote} />
         {
           /* §8.4.9: a download area appears ONLY when an approved spec sheet
              exists. d.media.specSheet is null for all four products, so nothing

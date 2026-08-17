@@ -1,7 +1,8 @@
-# Source: Feytom Website Taxonomy v1.0 Appendix A (rank 3) — this record
-# deliberately DIFFERS from the FEYTOM LLC Product List PDF (rank 5).
-# Per §20 the taxonomy outranks the product-list PDF. Two claims present in
-# the PDF are withheld; see safety.withheldClaims below.
+# Sources, in the order §20 ranks them:
+#   1. Owner decision, 17 Aug 2026 (D25) — publish the figures printed on
+#      Feytom's own retail packaging, each attributed to that packaging.
+#   3. Feytom Website Taxonomy v1.0 Appendix A — names and dimensions.
+#   5. FEYTOM LLC Product List PDF — two claims from it are still withheld.
 id: feytom-g70-516-20
 status: active
 name: Grade 70 Trucker's Chain
@@ -27,8 +28,21 @@ specifications:
   - label: Length
     value: Approximately 20 feet (6 m)
     sourceStatus: confirmed
+  # --- D25: printed on the retail packaging, attributed on the page ---
+  - label: Working load limit
+    value: 4,700 lb
+    sourceStatus: product_packaging
+  - label: Finish
+    value: Colour galvanized
+    sourceStatus: product_packaging
+  - label: End fittings
+    value: Grab hook at each end
+    sourceStatus: product_packaging
+  - label: Marked for
+    value: DOT transport requirements
+    sourceStatus: product_packaging
   - label: Packaging
-    value: Bag
+    value: Bag, with clear PVC carry bag
     sourceStatus: confirmed
 
 packaging:
@@ -39,32 +53,45 @@ commerce:
   inventoryStatus: contact_for_availability
 
 safety:
+  # Replaces the generic note for this product only: once a load limit is
+  # published, the conditions printed alongside it must be published too.
+  generalNote: >-
+    The 4,700 lb working load limit above is the figure printed on this product's
+    packaging. Confirm it against the manufacturer's technical documentation
+    before use, and do not exceed it. This chain is not for overhead lifting.
+    Wear ANSI-approved eye protection during setup and use, inspect the chain
+    before every use, do not use it if damaged, and keep it away from children.
   withheldClaims:
     - >-
+      Breaking strength — not stated on the packaging and not documented.
+      Withheld. A working load limit is not a breaking strength.
+    - >-
+      "Meets all Highway Patrol requirements" — printed on the packaging, but a
+      compliance claim naming an enforcement body needs documentary support
+      beyond bag artwork. Published only as "Marked for DOT transport
+      requirements", which describes the marking rather than asserting approval.
+    - >-
       "High-strength" — the Product List PDF opens this description with
-      "High-strength Grade 70 transport chain". Withheld: a strength claim
-      requires manufacturer documentation (§3.6). The taxonomy wording is used
-      instead.
+      "High-strength Grade 70 transport chain". Withheld as an unsupported
+      qualitative claim (§3.6); the grade and the load limit now carry the
+      information factually.
     - >-
-      "Towing" — the Product List PDF lists towing among the applications.
-      Withheld: §4 permits towing only where manufacturer documentation supports
-      the application. Publish once documentation is supplied.
-    - >-
-      Working load limit, breaking strength, finish, hook type and regulatory
-      compliance are all withheld pending manufacturer documentation (§5.3).
+      "Towing" — the Product List PDF lists towing among the applications. §4
+      permits towing only where manufacturer documentation supports it. Withheld.
 
 media:
   heroImage: ../../assets/products/grade-70-truckers-chain-bag.jpg
   altText: >-
     A Feytom Grade 70 trucker's chain coiled inside a clear PVC carry bag with a
     black fabric handle. The yellow-zinc chain and its two grab hooks are visible
-    through the bag; the printed insert reads 5/16 inch by 20 feet, Grade 70.
+    through the bag; the printed insert reads 5/16 inch by 20 feet, Grade 70,
+    4,700 lb working load.
   credit: client_supplied
   focal: center 52%
 
 seo:
   title: Grade 70 Trucker's Chain, 5/16 in x 20 ft | Feytom
-  description: 5/16 in x 20 ft Grade 70 transport chain by the bag, for cargo securement, trucking and heavy-duty industrial work. Request bulk pricing from Feytom.
+  description: 5/16 in x 20 ft Grade 70 transport chain, 4,700 lb working load as printed on the packaging, with grab hooks each end. Request bulk pricing from Feytom.
 
 relatedProducts:
   - grade-43-high-test-chain-5-16in-551ft

@@ -17,7 +17,9 @@ const { specifications, caption } = Astro.props;
 {caption && <p class="sr-only">{caption}</p>}
 <dl class="speclist">
   {specifications.map((s) => (
-    <div class:list={["speclist__row", s.sourceStatus !== "confirmed" && "speclist__row--pending"]}>
+    <div class:list={["speclist__row",
+        s.sourceStatus === "pending" && "speclist__row--pending",
+        s.sourceStatus === "product_packaging" && "speclist__row--sourced"]}>
       <dt class="speclist__label">{s.label}</dt>
       <dd class="speclist__value">
         {s.value}
@@ -26,6 +28,9 @@ const { specifications, caption } = Astro.props;
         )}
         {s.sourceStatus === "manufacturer_verified" && (
           <span class="verifiedtag">Manufacturer-verified</span>
+        )}
+        {s.sourceStatus === "product_packaging" && (
+          <span class="packagingtag">As printed on the packaging</span>
         )}
       </dd>
     </div>
@@ -47,5 +52,23 @@ const { specifications, caption } = Astro.props;
     text-transform: uppercase;
   }
   .pendingtag { color: var(--color-pending); }
+  /* Attribution, not a warning: this is real published data with its source
+     named, so it is muted rather than cautioned. */
+  .packagingtag {
+    display: block;
+    margin-inline-start: 0;
+    margin-block-start: 2px;
+    color: var(--color-text-muted);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: var(--text-xs);
+  }
+  /* Attributed rows get the same left marker as pending ones, in a neutral
+     tone: it flags "this value has a stated source" without implying a fault. */
+  .speclist__row--sourced {
+    box-shadow: inset 3px 0 0 var(--color-border-strong);
+    padding-inline-start: var(--space-1);
+  }
   .verifiedtag { color: var(--color-success); }
 </style>

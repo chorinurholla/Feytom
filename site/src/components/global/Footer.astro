@@ -14,7 +14,7 @@ const year = 2026; // build-time constant; no clock in the build (deterministic)
 <footer class="footer on-dark">
   <div class="container footer__inner">
     <div class="footer__brand">
-      <Logo variant="reversed" height={34} decorative />
+      <Logo variant="horizontal" height={32} tone="light" decorative />
       <p class="t-small footer__desc">
         Feytom supplies chains, lashing belts, ropes and industrial essentials for
         transportation, warehouse and material-handling operations across the
@@ -61,7 +61,7 @@ const year = 2026; // build-time constant; no clock in the build (deterministic)
   .footer {
     background: var(--color-bg-inverse-deep);
     color: var(--color-text-inverse-muted);
-    border-block-start: var(--rule-heavy) solid var(--color-action);
+    border-block-start: var(--rule-heavy) solid var(--color-accent-on-dark);
   }
   .footer__inner {
     display: grid; gap: var(--space-4);
@@ -79,7 +79,7 @@ const year = 2026; // build-time constant; no clock in the build (deterministic)
     display: flex; align-items: center; min-height: 40px;
     color: var(--color-text-inverse); text-decoration: none;
   }
-  .footer__link:hover { text-decoration: underline; text-decoration-color: var(--color-action); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
+  .footer__link:hover { text-decoration: underline; text-decoration-color: var(--color-accent-on-dark); text-decoration-thickness: 2px; text-underline-offset: 0.2em; }
   .footer__legal { border-block-start: var(--rule) solid var(--color-border-inverse); }
   .footer__legal-inner {
     display: flex; flex-wrap: wrap; gap: var(--space-0-5) var(--space-3);

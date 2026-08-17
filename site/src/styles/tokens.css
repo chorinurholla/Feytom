@@ -5,7 +5,19 @@
    ============================================================= */
 
 :root {
-  /* ---------- Brand palette (verbatim from §10.2) ---------- */
+  /* ---------- Logo palette (sampled from the supplied artwork) ----------
+     DECISION D24, 17 Aug 2026: the site follows the logo rather than §10.2.
+     Approved by Tolu after reviewing three rendered palettes side by side.
+     This SUPERSEDES §10.2's navy + Signal Orange system; the original tokens
+     are kept below, unused, so the decision is reversible in one file. */
+  --logo-blue: #0130b7; /* the swoosh mid-blue — the action colour */
+  --logo-blue-dark: #012474; /* the swoosh shadow — headings, dark surfaces */
+  --logo-blue-deepest: #04173f; /* extended for full-bleed surfaces */
+  --logo-blue-press: #011f8a; /* darker still: hover, where white text gains contrast */
+  --logo-cyan: #30bffc; /* the swoosh highlight — accent on dark ONLY (2.10:1 on white) */
+  --logo-silver: #f5f6f8; /* the chrome. Never UI text: 1.08:1 on white */
+
+  /* ---------- §10.2 palette — SUPERSEDED, retained for reversibility ---------- */
   --feytom-navy: #102a43;
   --feytom-orange: #f36c21;
   --feytom-iron: #20272d;
@@ -14,22 +26,27 @@
   --feytom-sand: #f4f1ea;
   --feytom-white: #ffffff;
 
-  /* ---------- Semantic colour (verbatim from §10.2) ---------- */
+  /* ---------- Semantic colour — mapped to the logo palette (D24) ---------- */
   --color-bg: var(--feytom-white);
-  --color-bg-subtle: var(--feytom-sand);
+  /* Sand is a warm cream; it fights a saturated cool blue. Cool tint instead. */
+  --color-bg-subtle: #f1f5fb;
   --color-text: var(--feytom-iron);
-  --color-text-muted: #52616d;
-  --color-heading: var(--feytom-navy);
-  --color-border: var(--feytom-galvanized);
-  --color-action: var(--feytom-orange);
-  --color-focus: #0067b1;
+  --color-text-muted: #4e5b6e;
+  --color-heading: var(--logo-blue-dark);
+  --color-border: #dbe3ef;
+  --color-action: var(--logo-blue);
+  /* The action colour is now the same hue as headings and links, so the button
+     is distinguished by its FILL rather than its hue. That is why the focus
+     ring below is deliberately NOT blue — a blue ring on a blue button would
+     be invisible. */
+  --color-focus: var(--feytom-iron);
 
   /* Addition: --color-border is Galvanized at 1.31:1 on white — fine for a
      decorative hairline, but it CANNOT be the perceivable boundary of a form
      control (WCAG 2.2 SC 1.4.11 requires 3:1). Anything a user must see in
      order to operate the interface uses the -strong pair instead. */
-  --color-border-strong: var(--feytom-steel); /* 3.67:1 on white */
-  --color-border-inverse-strong: #6f8aa6; /* measured against navy in the gate */
+  --color-border-strong: #77869e; /* cool equivalent of Steel; gated at 3:1 */
+  --color-border-inverse-strong: #7d97c4; /* gated against the blue surfaces */
 
   /* DECISION D7c — token override.
      §10.2 sets --color-action-text: #FFFFFF, but §10.2 also instructs
@@ -37,27 +54,35 @@
      Measured: #FFFFFF on #F36C21 = 3.01:1 (fails AA normal text).
                 #20272D on #F36C21 = 5.02:1 (passes AA normal text).
      Iron is therefore the default label colour on orange fills. */
-  --color-action-text: var(--feytom-iron);
+  /* White on --logo-blue measures 9.96:1 — the logo palette carries white text
+     comfortably, so the Iron-on-orange override (old D7c) is no longer needed. */
+  --color-action-text: var(--feytom-white);
 
   /* ---------- Derived surfaces (additions, documented) ---------- */
-  --color-bg-inverse: var(--feytom-navy);
-  --color-bg-inverse-deep: #0b1c2e; /* hero base, darker than navy for strap contrast */
+  --color-bg-inverse: var(--logo-blue-dark);
+  --color-bg-inverse-deep: var(--logo-blue-deepest);
   --color-text-inverse: var(--feytom-white);
-  --color-text-inverse-muted: #a9b8c6; /* 7.9:1 on navy — AA normal text */
-  --color-border-inverse: #2b4560;
-  /* Hover BRIGHTENS rather than darkens. With an Iron label (D7c), darkening
-     the fill lowers contrast — the conventional darken-on-hover measured
-     3.95:1 and failed the gate. #ff7a33 measures 5.82:1 with Iron. */
-  --color-action-hover: #ff7a33;
+  --color-text-inverse-muted: #adc2e2; /* gated on both blue surfaces */
+  --color-border-inverse: #21386d;
+  /* With a WHITE label, hover can darken conventionally — darkening raises
+     contrast rather than lowering it. (The old brighten-on-hover rule existed
+     only because the orange fill carried a dark label.) */
+  --color-action-hover: var(--logo-blue-press);
   /* Active returns to the base fill and shifts 1px — no new colour pairing. */
   --color-action-active: var(--feytom-orange);
-  --color-focus-inverse: #7fc4ff; /* focus ring that survives dark surfaces */
+  /* The action blue is invisible against the blue surfaces, so anything
+     accent-coloured on a dark background uses cyan instead. This is the token
+     that keeps that rule from being a matter of memory. */
+  --color-accent-on-dark: var(--logo-cyan);
+  --color-focus-inverse: #9ad8ff; /* focus ring that survives the blue surfaces */
 
   /* ---------- Status ---------- */
   --color-success: #1c6b3f;
   --color-warning: #8a5a12;
   --color-error: #a32319;
-  --color-pending: #6b5a2e; /* "verification pending" specs — never styled as an error */
+  /* Deliberately WARM. In an all-blue system a cool "pending" marker would read
+     as brand colour rather than as a caveat. */
+  --color-pending: #6b5a2e;
 
   /* ---------- Typography ---------- */
   --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue Condensed",

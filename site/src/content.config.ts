@@ -13,7 +13,19 @@ import { glob } from "astro/loaders";
    client supplying manufacturer documentation (§19).
    ============================================================= */
 
-const sourceStatus = z.enum(["confirmed", "manufacturer_verified", "pending"]);
+const sourceStatus = z.enum([
+  /* Observable on the product as supplied — dimensions, packaging, colour. */
+  "confirmed",
+  /* Printed on Feytom's own retail packaging. Weaker than a spec sheet, but it
+     is the client publishing the figure commercially, so withholding it on the
+     website while the packaging photograph shows it would be incoherent rather
+     than careful. ALWAYS rendered with its source attached (D25). */
+  "product_packaging",
+  /* Backed by a manufacturer spec sheet or test certificate. None yet. */
+  "manufacturer_verified",
+  /* Asserted somewhere but not yet evidenced. Rendered as unverified. */
+  "pending",
+]);
 
 const specification = z.object({
   label: z.string().min(1),

@@ -88,6 +88,25 @@ for (const d of SCAN_DIRS) {
   if (existsSync(p)) await walk(p);
 }
 
+/* ------------------------------------------------- provenance check (D25)
+ * Allowing attributed load limits means the keyword rules can no longer tell a
+ * published claim from a withheld one in the product records. This restores the
+ * protection at the point that actually matters: a sensitive spec label may
+ * appear in a product file ONLY if the very next lines give it a provenance
+ * that is not "confirmed" or "pending". A load limit is never something we
+ * observed ourselves, so "confirmed" is the wrong claim to make about it.
+ * ---------------------------------------------------------------------- */
+const SENSITIVE_LABELS = [
+  /^\s*-?\s*label:\s*Working load limit\s*$/i,
+  /^\s*-?\s*label:\s*Breaking strength\s*$/i,
+  /^\s*-?\s*label:\s*Rated capacity\s*$/i,
+  /^\s*-?\s*label:\s*Marked for\s*$/i,
+];
+const ALLOWED_PROVENANCE = ["product_packaging", "manufacturer_verified"];
+
+const provenanceFindings = [];
+for (const abs of []) void abs; // populated below, after `files` is built
+
 /* ------------------------------------------------------------------- scan */
 const findings = [];
 for (const abs of files) {
@@ -117,10 +136,35 @@ for (const abs of files) {
   }
 }
 
+/* --------------------------------------------- run the provenance check */
+for (const abs of files) {
+  const rel = relative(ROOT, abs);
+  if (!/src\/content\/products\/.*\.ya?ml$/.test(rel)) continue;
+  const lines = readFileSync(abs, "utf8").split("\n");
+  lines.forEach((line, i) => {
+    if (!SENSITIVE_LABELS.some((re) => re.test(line))) return;
+    const window = lines.slice(i, i + 4).join(" ");
+    const m = window.match(/sourceStatus:\s*([a-z_]+)/);
+    const status = m ? m[1] : "(none)";
+    if (!ALLOWED_PROVENANCE.includes(status)) {
+      provenanceFindings.push({
+        file: rel,
+        line: i + 1,
+        col: 1,
+        rule: "provenance",
+        matched: line.trim(),
+        why: `A sensitive spec needs sourceStatus product_packaging or manufacturer_verified — found "${status}". A load limit is never something we observed ourselves.`,
+        context: line.trim().slice(0, 110),
+      });
+    }
+  });
+}
+findings.push(...provenanceFindings);
+
 /* ----------------------------------------------------------------- report */
 if (findings.length === 0) {
   console.log(
-    `Content guard: ${files.length} file(s) scanned, ${RULES.length} rules, 0 violations.`
+    `Content guard: ${files.length} file(s) scanned, ${RULES.length} keyword rules + provenance check, 0 violations.`
   );
   if (allow.exceptions.length) {
     console.log(`  ${allow.exceptions.length} documented exception(s) in content-guard.allow.json`);

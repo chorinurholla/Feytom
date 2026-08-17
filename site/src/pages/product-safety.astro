@@ -38,32 +38,53 @@ const crumbs = [{ label: "Home", href: "/" }, { label: "Product safety" }];
       </div>
 
       <div class="ps__body">
-        <h2 class="t-h2">What we publish</h2>
+        <h2 class="t-h2">Every figure carries its source</h2>
         <p class="t-body">
-          Product pages carry the values we can confirm from the product as
-          supplied: dimensions, material, grade, length and packaging. Each one is
-          recorded against its source, and anything not yet verified is labelled as
-          unverified rather than presented as fact.
+          Specifications on this site sit at one of three levels of evidence, and
+          the level is shown next to the value rather than left for you to guess.
         </p>
+        <ol class="ps__levels">
+          <li>
+            <strong>Confirmed.</strong> Observable on the product as supplied —
+            diameter, length, material, colour, packaging. Shown plainly.
+          </li>
+          <li>
+            <strong>As printed on the packaging.</strong> Figures Feytom publishes
+            on its own retail packaging, reproduced here with that attribution
+            visible. The Grade 70 chain's 4,700 lb working load limit is the
+            current example. This is real published data, and it is weaker than a
+            test certificate — which is why we name where it comes from instead of
+            presenting it as our own measurement.
+          </li>
+          <li>
+            <strong>Manufacturer-verified.</strong> Backed by a spec sheet or test
+            certificate. <em>We hold none yet.</em> When we do, those values will
+            be labelled as such, and they will take precedence over packaging
+            figures.
+          </li>
+        </ol>
 
-        <h2 class="t-h2">What we withhold, and why</h2>
+        <h2 class="t-h2">What we still withhold</h2>
         <p class="t-body">
-          Working-load limits, breaking strengths, rated capacities, finishes,
-          construction details and regulatory or certification claims are not
-          published until the manufacturer's technical documentation supports them.
-          A figure stamped or printed on a product is a marking. It is not, on its
-          own, a certified rating.
+          Anything that does not sit at one of those three levels is not published.
+          That currently includes breaking strengths for every product, and any
+          compliance claim naming an enforcement body.
         </p>
         <ul class="ps__list">
           <li>
-            <strong>Markings are published as markings.</strong> The lashing belt
-            carries a 3T marking. We state that it is a product marking, and we do
-            not present it as a working-load limit.
+            <strong>A bare marking is not a rating.</strong> The lashing belt
+            carries a 3T marking. We publish it as a marking, because a stamped
+            figure with no stated basis does not establish a working load limit.
           </li>
           <li>
-            <strong>Grades are published as grades.</strong> Grade 70 and Grade 43
-            identify the chain. Confirm the correct grade for your application
-            against the manufacturer's documentation.
+            <strong>A working load limit is not a breaking strength.</strong> The
+            two are different numbers with different safety factors. We publish
+            neither unless it is stated somewhere we can point to.
+          </li>
+          <li>
+            <strong>Marked for is not approved by.</strong> The Grade 70 chain is
+            marked for DOT transport requirements. That describes the marking. It
+            is not a statement that any authority has approved the product.
           </li>
           <li>
             <strong>Applications are possible uses, not approvals.</strong> A use
@@ -114,6 +135,8 @@ const crumbs = [{ label: "Home", href: "/" }, { label: "Product safety" }];
   .ps__body { display: flex; flex-direction: column; gap: var(--space-2); max-width: var(--measure); }
   .ps__body h2 { margin-block-start: var(--space-3); }
   .ps__body h2:first-child { margin-block-start: 0; }
-  .ps__list { margin: 0; padding-inline-start: var(--space-3); display: flex; flex-direction: column; gap: var(--space-1); }
-  .ps__list strong { color: var(--color-heading); }
+  .ps__list, .ps__levels { margin: 0; padding-inline-start: var(--space-3); display: flex; flex-direction: column; gap: var(--space-1-5); }
+  .ps__levels li { padding-inline-start: var(--space-0-5); }
+  .ps__levels em { color: var(--color-pending); font-style: normal; font-weight: 600; }
+  .ps__list strong, .ps__levels strong { color: var(--color-heading); }
 </style>

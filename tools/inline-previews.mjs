@@ -17,7 +17,7 @@ const fonts = readdirSync("public/fonts").map((f) => [
   readFileSync(`public/fonts/${f}`).toString("base64"),
 ]);
 const cssFiles = readdirSync("dist/_astro").filter((f) => f.endsWith(".css"));
-const fav = readFileSync("public/favicon.svg").toString("base64");
+const fav = readFileSync("public/favicon-32.png").toString("base64");
 
 const PAGES = [
   ["dist/index.html", "home.html", "Home — all eight modules"],
@@ -74,7 +74,7 @@ for (const [src, name, banner] of PAGES) {
     const b64 = readFileSync(file).toString("base64");
     html = html.split(ref).join(`data:${MIME[ext]};base64,${b64}`);
   }
-  html = html.split("/favicon.svg").join(`data:image/svg+xml;base64,${fav}`);
+  html = html.split("/favicon-32.png").join(`data:image/png;base64,${fav}`);
   html = html.replace(
     /<\/body>/,
     `<div style="background:#F4F1EA;border-top:3px solid #F36C21;padding:1.25rem 1.5rem;font:14px/1.6 system-ui,sans-serif;color:#52616D">
