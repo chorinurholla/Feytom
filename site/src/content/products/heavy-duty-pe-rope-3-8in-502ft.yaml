@@ -27,6 +27,9 @@ specifications:
   - label: Length
     value: Approximately 502 feet per roll (153 m)
     sourceStatus: confirmed
+  - label: Colour
+    value: Yellow
+    sourceStatus: confirmed
   - label: Packaging
     value: Roll
     sourceStatus: confirmed
@@ -45,6 +48,19 @@ safety:
       marine certification are all withheld pending manufacturer documentation
       (§5.3). "Marine use" is published as a possible application only, not as a
       marine approval.
+
+media:
+  heroImage: ../../assets/products/heavy-duty-pe-rope-spool-studio.jpg
+  altText: >-
+    A spool of yellow twisted polyethylene rope on a black plastic reel,
+    photographed against a plain white background.
+  credit: client_supplied
+  gallery:
+    - src: ../../assets/products/heavy-duty-pe-rope-spool-labelled.jpg
+      altText: >-
+        The same yellow polyethylene rope spool in a warehouse, with its printed
+        label showing a 3/8 inch diameter.
+      caption: The printed label confirms the 3/8 inch diameter.
 
 seo:
   title: Heavy-Duty PE Rope, 3/8 in x 502 ft | Feytom

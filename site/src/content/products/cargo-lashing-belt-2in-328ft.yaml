@@ -25,6 +25,9 @@ specifications:
   - label: Product marking
     value: 3T
     sourceStatus: confirmed
+  - label: Colour
+    value: Orange, with black Feytom branding printed along the belt
+    sourceStatus: confirmed
   - label: Packaging
     value: Roll
     sourceStatus: confirmed
@@ -41,6 +44,20 @@ safety:
     - The 3T marking is published as a product marking only. It is not presented
       as a certified working-load limit, and must not be read as one, until
       manufacturer documentation establishes a rating.
+
+media:
+  heroImage: ../../assets/products/cargo-lashing-belt-branded-webbing.jpg
+  altText: >-
+    Coils of orange Feytom cargo-lashing webbing stacked on their sides. The
+    Feytom name and mark are printed in black along the belt, alongside the
+    black dashed lines woven into the weave.
+  credit: client_supplied
+  gallery:
+    - src: ../../assets/products/cargo-lashing-belt-rolls.jpg
+      altText: >-
+        Large flat coils of orange lashing webbing banded with clear strapping,
+        stacked on a pallet in a warehouse.
+      caption: Supplied on the roll and banded for pallet shipment.
 
 seo:
   title: Cargo Lashing Belt, 2 in x 328 ft | Feytom

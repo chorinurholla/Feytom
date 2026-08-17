@@ -3,6 +3,7 @@
  * Product detail page (§8.4). All ten required modules.
  */
 import type { GetStaticPaths } from "astro";
+import { Picture } from "astro:assets";
 import BaseLayout from "../../../../layouts/BaseLayout.astro";
 import Breadcrumbs from "../../../../components/global/Breadcrumbs.astro";
 import SpecList from "../../../../components/product/SpecList.astro";
@@ -67,17 +68,32 @@ const packagingUnknowns = [
       <div class="pdp__media">
         {
           d.media.heroImage ? (
-            <img src={d.media.heroImage} alt={d.media.altText!} width="900" height="675" />
+            <Picture
+              class="pdp__img"
+              src={d.media.heroImage}
+              alt={d.media.altText!}
+              widths={[600, 900, 1200]}
+              sizes="(min-width: 62em) 40rem, 92vw"
+              formats={["avif", "webp"]}
+              fallbackFormat="jpeg"
+              quality={74}
+              loading="eager"
+              fetchpriority="high"
+            />
           ) : (
             <ProductPlaceholder family={familyKey} sizeSummary={d.sizeSummary} size="detail" />
           )
         }
         {
-          !d.media.heroImage && (
+          !d.media.heroImage ? (
             <p class="t-small pdp__mediaNote">
               Product photography is being prepared. The plate above shows the
               supplied size rather than a stand-in image of a different product.
             </p>
+          ) : (
+            d.media.credit === "client_supplied" && (
+              <p class="t-small pdp__mediaNote">Photograph of the product as supplied.</p>
+            )
           )
         }
       </div>
@@ -104,6 +120,37 @@ const packagingUnknowns = [
     </div>
 
     <div class="container pdp__body">
+      {
+        d.media.gallery.length > 0 && (
+          <section class="pdp__section" aria-labelledby="gallery-h">
+            <h2 id="gallery-h" class="t-h2">More views</h2>
+            <ul class="pdp__gallery">
+              {d.media.gallery.map((g) => (
+                <li>
+                  <figure class="pdp__fig">
+                    <Picture
+                      class="pdp__figimg"
+                      src={g.src}
+                      alt={g.altText}
+                      widths={[400, 800]}
+                      sizes="(min-width: 48em) 24rem, 92vw"
+                      formats={["avif", "webp"]}
+                      fallbackFormat="jpeg"
+                      quality={72}
+                      loading="lazy"
+                      decoding="async"
+                    />
+                    {g.caption && (
+                      <figcaption class="t-small pdp__figcap">{g.caption}</figcaption>
+                    )}
+                  </figure>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
+      }
+
       <section class="pdp__section" aria-labelledby="apps-h">
         <h2 id="apps-h" class="t-h2">Possible applications</h2>
         <p class="pdp__note">
@@ -196,6 +243,17 @@ const packagingUnknowns = [
     flex-direction: column;
     gap: var(--space-1);
   }
+  /* Real photographs keep their own aspect ratio — forcing 4:3 on a portrait
+     flat-lay would crop the label, which is the informative part. Astro emits
+     intrinsic width/height, so there is no layout shift either way. */
+  .pdp__img {
+    width: 100%;
+    height: auto;
+    max-height: 34rem;
+    object-fit: contain;
+    background: var(--color-bg-subtle);
+    border: var(--rule) solid var(--color-border);
+  }
   .pdp__mediaNote {
     margin: 0;
     color: var(--color-text-muted);
@@ -259,4 +317,23 @@ const packagingUnknowns = [
     margin: 0;
     padding: 0;
   }
+  .pdp__gallery {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-3);
+    grid-template-columns: minmax(0, 1fr);
+  }
+  @media (min-width: 48em) {
+    .pdp__gallery { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  .pdp__fig { margin: 0; display: flex; flex-direction: column; gap: var(--space-1); }
+  .pdp__figimg {
+    width: 100%;
+    height: auto;
+    border: var(--rule) solid var(--color-border);
+    background: var(--color-bg-subtle);
+  }
+  .pdp__figcap { margin: 0; color: var(--color-text-muted); }
 </style>

@@ -1,6 +1,7 @@
 ---
 import type { Product } from "../../lib/catalog";
 import { productUrl } from "../../lib/catalog";
+import { Picture } from "astro:assets";
 import ProductPlaceholder from "./ProductPlaceholder.astro";
 
 interface Props {
@@ -24,7 +25,20 @@ const highlights = [
 <article class="card card--action pcard">
   {
     d.media.heroImage ? (
-      <img class="pcard__img" src={d.media.heroImage} alt={d.media.altText!} width="600" height="400" loading="lazy" />
+      <div class="pcard__frame" style={`--focal:${d.media.focal}`}>
+        <Picture
+          class="pcard__img"
+          src={d.media.heroImage}
+          alt={d.media.altText!}
+          widths={[400, 600, 900]}
+          sizes="(min-width: 62em) 24rem, (min-width: 40em) 45vw, 92vw"
+          formats={["avif", "webp"]}
+          fallbackFormat="jpeg"
+          quality={72}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
     ) : (
       <ProductPlaceholder family={family} sizeSummary={d.sizeSummary} size="card" />
     )
@@ -57,6 +71,22 @@ const highlights = [
 <style>
   .pcard {
     position: relative;
+    /* Fill the grid cell so `margin: auto 0 0` on the spec block bottom-aligns
+       specs across a row, whatever the description length. */
+    height: 100%;
+  }
+  /* Cards share one ratio so a row lines up; the file is never cropped, the
+     display is. object-position favours the top, where labels sit. */
+  .pcard__frame {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+    background: var(--color-bg-inverse);
+  }
+  .pcard__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--focal, center 40%);
   }
   .pcard__eyebrow {
     color: var(--color-text-muted);

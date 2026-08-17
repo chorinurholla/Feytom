@@ -23,7 +23,11 @@ const specification = z.object({
 
 const products = defineCollection({
   loader: glob({ pattern: "**/*.yaml", base: "./src/content/products" }),
-  schema: z.object({
+  /* The schema is a function so it can use Astro's image() helper. image()
+     validates that the file exists at build time and hands the component real
+     width/height metadata, which is what lets us reserve space and avoid layout
+     shift (§14) rather than hard-coding dimensions per product. */
+  schema: ({ image }) => z.object({
     id: z.string().min(1),
     status: z.enum(["draft", "active", "temporarily_unavailable", "archived"]),
     name: z.string().min(1),
@@ -74,16 +78,44 @@ const products = defineCollection({
 
     media: z
       .object({
-        heroImage: z.string().nullable().default(null),
-        gallery: z.array(z.string()).default([]),
+        heroImage: image().optional(),
+        /* Each gallery entry carries its own alt text. An image without a
+           description is not a gallery item, it is an accessibility defect. */
+        gallery: z
+          .array(
+            z.object({
+              src: image(),
+              /* What is in the frame — for someone who cannot see it. */
+              altText: z.string().min(10),
+              /* Why the photo is worth showing — for everyone. Must NOT repeat
+                 altText, or assistive tech announces the same sentence twice. */
+              caption: z.string().min(10).optional(),
+            })
+          )
+          .default([]),
         specSheet: z.string().nullable().default(null),
         altText: z.string().nullable().default(null),
+        /* Where the photograph came from, so provenance is auditable. §10.4
+           forbids imagery that misleads; recording the source is how we can
+           show that a photo is of the actual product and not a competitor's. */
+        credit: z.enum(["client_supplied", "manufacturer_supplied", "studio"]).optional(),
+        /* CSS object-position for the card crop. Cards share one ratio so a row
+           lines up; this decides WHICH part of a photo survives that crop, per
+           image, without a code change. The file itself is never cropped. */
+        focal: z.string().default("center 40%"),
       })
-      .default({})
       .refine((m) => !m.heroImage || !!m.altText, {
         message: "altText is required whenever heroImage is set",
         path: ["altText"],
-      }),
+      })
+      .refine((m) => !m.heroImage || !!m.credit, {
+        message: "credit is required whenever heroImage is set — record where the photo came from",
+        path: ["credit"],
+      })
+      /* .default() must come AFTER the refinements. Applied before them the
+         refinements wrap the default and a product with no media block parses
+         to undefined, which then explodes on media.gallery.length. */
+      .default({ gallery: [], specSheet: null, altText: null }),
 
     seo: z.object({
       title: z.string().min(10).max(62),
