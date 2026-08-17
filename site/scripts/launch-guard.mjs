@@ -12,6 +12,8 @@ const dest = e.PUBLIC_QUOTE_DESTINATION ?? "";
 const privacy = e.PUBLIC_PRIVACY_APPROVED === "true";
 const testSubs = e.PUBLIC_ALLOW_TEST_SUBMISSIONS === "true";
 const url = e.PUBLIC_SITE_URL ?? "";
+const showPrices = e.PUBLIC_SHOW_PRICES === "true";
+const saleTerms = e.PUBLIC_SALE_TERMS_APPROVED === "true";
 
 const fail = [];
 const warn = [];
@@ -28,8 +30,25 @@ if (stage === "live") {
   if (testSubs) warn.push("Test submissions are ENABLED. The form will carry a visible test-only banner.");
 }
 
+/* D26 — selling, not just quoting, brings its own preconditions. */
+if (showPrices && !saleTerms) {
+  fail.push(
+    "PUBLIC_SHOW_PRICES=true but PUBLIC_SALE_TERMS_APPROVED is not. Publishing a price is an invitation to buy; there must be approved terms of sale and a returns policy behind it."
+  );
+}
+if (showPrices && !privacy && stage === "live") {
+  fail.push(
+    "Prices are published on a live build without an approved privacy notice. Taking an order means taking personal data."
+  );
+}
+if (showPrices) {
+  warn.push("Prices are VISIBLE. Every published price excludes delivery and tax, and each product page says so.");
+}
+
 const pad = (s) => `  ${s}`;
-console.log(`Launch guard: stage=${stage} · url=${url || "(unset)"} · quote=${dest || "(unset)"} · privacy=${privacy} · testSubs=${testSubs}`);
+console.log(
+  `Launch guard: stage=${stage} · url=${url || "(unset)"} · quote=${dest || "(unset)"} · privacy=${privacy} · testSubs=${testSubs} · prices=${showPrices} · saleTerms=${saleTerms}`
+);
 for (const w of warn) console.log(pad(`note: ${w}`));
 if (fail.length) {
   console.error(`\nLaunch guard FAILED — ${fail.length} configuration problem(s):\n`);

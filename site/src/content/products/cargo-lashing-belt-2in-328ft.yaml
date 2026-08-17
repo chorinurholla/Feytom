@@ -37,6 +37,7 @@ packaging:
 
 commerce:
   mode: request_quote
+  fulfilment: parcel
   inventoryStatus: contact_for_availability
 
 safety:

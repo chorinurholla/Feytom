@@ -1,0 +1,191 @@
+---
+/**
+ * Price and buying action (D26, stage 1 of selling online).
+ *
+ * The model is deliberately NOT a cart. Delivery cannot be calculated yet —
+ * three products go by parcel and one is roughly a quarter of a ton on a pallet
+ * — so a checkout total would either be wrong or invented. Instead:
+ *
+ *     published price  →  request a quote  →  delivered total confirmed
+ *                      →  payment link  →  paid by card
+ *
+ * That is a real "buy and pay on the website" route for how bulk buyers order,
+ * and it never shows a number that isn't the number.
+ *
+ * A freight product never offers a buying action at all, whatever its mode.
+ * The schema enforces that too; this is the visible half of the same rule.
+ */
+import type { Product } from "../../lib/catalog";
+import { quoteUrl } from "../../lib/catalog";
+import { PRICES_VISIBLE } from "../../lib/config";
+
+interface Props {
+  product: Product;
+  /** "detail" gets the full treatment; "card" is the compact catalogue row. */
+  size?: "detail" | "card";
+}
+const { product, size = "detail" } = Astro.props;
+const c = product.data.commerce;
+const isFreight = c.fulfilment === "freight";
+const price = PRICES_VISIBLE ? c.price : null;
+
+const money =
+  price &&
+  new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: price.currency,
+  }).format(price.amount);
+
+const excludes = price
+  ? price.excludes.map((e) => (e === "tax" ? "sales tax" : e)).join(" and ")
+  : "";
+---
+
+{
+  size === "card" ? (
+    <div class="pb pb--card">
+      {price ? (
+        <p class="pb__row">
+          <span class="pb__amount t-numeric">{money}</span>
+          <span class="pb__per">per {price.per}</span>
+        </p>
+      ) : (
+        <p class="pb__row pb__row--quote">Contact for pricing</p>
+      )}
+      {isFreight && <p class="pb__freight">Freight item</p>}
+    </div>
+  ) : (
+    <div class="pb">
+      {
+        price ? (
+          <>
+            <p class="pb__row">
+              <span class="pb__amount t-numeric">{money}</span>
+              <span class="pb__per">per {price.per}</span>
+            </p>
+            <p class="pb__excl">
+              Excludes {excludes}. The delivered total is confirmed on your quote
+              before any payment is taken.
+            </p>
+          </>
+        ) : (
+          <p class="pb__row pb__row--quote">Contact for pricing and availability</p>
+        )
+      }
+
+      {
+        isFreight ? (
+          <div class="pb__freightbox">
+            <h3 class="t-eyebrow pb__freighth">Freight item</h3>
+            <p class="pb__freightbody">
+              This product ships on a pallet, not as a parcel. Delivery is quoted
+              to your address rather than calculated at a flat rate, so it is not
+              available for immediate online payment. Send a request and we will
+              come back with a delivered price you can pay by card.
+            </p>
+            <a href={quoteUrl(product)} class="btn btn--primary">
+              Request a Delivered Price
+            </a>
+          </div>
+        ) : (
+          <div class="pb__actions">
+            <a href={quoteUrl(product)} class="btn btn--primary">
+              {price ? "Request a Quote to Buy" : "Request Pricing & Availability"}
+            </a>
+            <p class="t-small pb__how">
+              We confirm the delivered total, then send a payment link you can pay
+              by card. Bulk quantities available.
+            </p>
+          </div>
+        )
+      }
+    </div>
+  )
+}
+
+<style>
+  .pb {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1-5);
+  }
+  .pb__row {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-1);
+    margin: 0;
+  }
+  .pb__amount {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    line-height: 1;
+    color: var(--color-heading);
+  }
+  .pb__per {
+    color: var(--color-text-muted);
+    font-size: var(--text-sm);
+  }
+  .pb__row--quote {
+    font-weight: 600;
+    color: var(--color-text-muted);
+  }
+  .pb__excl {
+    margin: 0;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    max-width: var(--measure-narrow);
+  }
+  .pb__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+  }
+  .pb__how {
+    margin: 0;
+    color: var(--color-text-muted);
+    max-width: var(--measure-narrow);
+  }
+
+  /* Freight is stated as a fact about the product, not as an apology. */
+  .pb__freightbox {
+    border: var(--rule) solid var(--color-border);
+    border-inline-start: var(--rule-heavy) solid var(--color-heading);
+    background: var(--color-bg-subtle);
+    padding: var(--space-2);
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-1);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .pb__freighth {
+    color: var(--color-heading);
+    margin: 0;
+  }
+  .pb__freightbody {
+    margin: 0;
+    max-width: var(--measure-narrow);
+  }
+
+  /* card variant */
+  .pb--card {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-1);
+    flex-wrap: wrap;
+  }
+  .pb--card .pb__amount {
+    font-size: var(--text-xl);
+  }
+  .pb__freight {
+    margin: 0;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+</style>

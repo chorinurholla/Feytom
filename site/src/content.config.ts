@@ -69,13 +69,60 @@ const products = defineCollection({
       shippingWeight: z.string().nullable().default(null),
     }),
 
-    commerce: z.object({
-      mode: z.literal("request_quote"),
-      sku: z.string().nullable().default(null),
-      price: z.null().default(null), // LOCK — no approved pricing (§6)
-      minimumOrderQuantity: z.string().nullable().default(null),
-      inventoryStatus: z.literal("contact_for_availability"),
-    }),
+    commerce: z
+      .object({
+        /* D26, 17 Aug 2026: the client wants customers to pay on the site. This
+           reverses §6's catalog-only model, in stages. Stage 1 publishes prices
+           and takes payment against a QUOTE (a Stripe payment link), because
+           delivery cannot yet be calculated. Stage 2 adds parcel checkout. */
+        mode: z.enum(["request_quote", "buy_online"]).default("request_quote"),
+        sku: z.string().nullable().default(null),
+
+        /* How this product physically ships. It decides which action the page
+           offers, so it is required rather than inferred. A 551 ft chain drum
+           is a pallet, not a parcel, and must never be offered at a parcel
+           price. */
+        fulfilment: z.enum(["parcel", "freight"]),
+
+        /* The price lock is REPLACED, not removed. A bare number is still
+           refused: an amount means nothing here without the unit it buys —
+           "per roll" and "per foot" differ by three orders of magnitude — and
+           without stating what it excludes. */
+        price: z
+          .object({
+            amount: z.number().positive(),
+            currency: z.literal("USD"),
+            /** The unit the amount buys. Appears next to the figure. */
+            per: z.enum(["roll", "bag", "drum", "foot", "each"]),
+            /** Must list everything not included. Enforced by the launch guard
+                while delivery and tax remain unresolved. */
+            excludes: z.array(z.enum(["delivery", "tax"])).min(1),
+            source: z.enum(["client_supplied", "list_price"]),
+            /** ISO date. A price with no date cannot be audited later.
+                YAML silently converts a bare 2026-08-17 into a Date object, so
+                both forms are accepted and normalised — requiring quotes would
+                be a trap for whoever edits these files next. */
+            effectiveFrom: z
+              .union([z.string().regex(/^\d{4}-\d{2}-\d{2}$/), z.date()])
+              .transform((v) =>
+                typeof v === "string" ? v : v.toISOString().slice(0, 10)
+              ),
+          })
+          .nullable()
+          .default(null),
+
+        minimumOrderQuantity: z.string().nullable().default(null),
+        inventoryStatus: z.literal("contact_for_availability"),
+      })
+      .refine((c) => c.mode !== "buy_online" || !!c.price, {
+        message: "mode buy_online requires a price",
+        path: ["price"],
+      })
+      .refine((c) => c.fulfilment !== "freight" || c.mode === "request_quote", {
+        message:
+          "a freight item cannot be mode buy_online — delivery must be quoted, not calculated",
+        path: ["mode"],
+      }),
 
     safety: z.object({
       generalNote: z.string().min(20).default(SAFETY_NOTE),

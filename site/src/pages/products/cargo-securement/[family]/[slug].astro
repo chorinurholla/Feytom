@@ -7,6 +7,7 @@ import { Picture } from "astro:assets";
 import BaseLayout from "../../../../layouts/BaseLayout.astro";
 import Breadcrumbs from "../../../../components/global/Breadcrumbs.astro";
 import SpecList from "../../../../components/product/SpecList.astro";
+import PriceBlock from "../../../../components/product/PriceBlock.astro";
 import ProductPlaceholder from "../../../../components/product/ProductPlaceholder.astro";
 import ProductCard from "../../../../components/product/ProductCard.astro";
 import SafetyNote from "../../../../components/content/SafetyNote.astro";
@@ -109,12 +110,7 @@ const packagingUnknowns = [
         <SpecList specifications={d.specifications} caption={`Specifications for ${d.name}`} />
 
         <div class="pdp__actions">
-          <a href={quoteUrl(product)} class="btn btn--primary">
-            Request Pricing &amp; Availability
-          </a>
-          <p class="t-small pdp__avail">
-            Bulk quantities available. Contact for pricing and availability.
-          </p>
+          <PriceBlock product={product} />
         </div>
       </div>
     </div>

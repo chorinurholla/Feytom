@@ -28,6 +28,16 @@ export const PRIVACY_APPROVED: boolean = env.PUBLIC_PRIVACY_APPROVED === "true";
 export const ALLOW_TEST_SUBMISSIONS: boolean =
   env.PUBLIC_ALLOW_TEST_SUBMISSIONS === "true";
 
+/** Publish prices. Off until real figures AND terms of sale exist (D26). */
+export const SHOW_PRICES: boolean = env.PUBLIC_SHOW_PRICES === "true";
+
+/** Approved terms of sale + returns policy are published at /terms/ etc. */
+export const SALE_TERMS_APPROVED: boolean =
+  env.PUBLIC_SALE_TERMS_APPROVED === "true";
+
+/** Prices may only be shown once there are terms to sell under. */
+export const PRICES_VISIBLE = SHOW_PRICES && SALE_TERMS_APPROVED;
+
 export const IS_INDEXABLE = SITE_STAGE === "live";
 
 /** The form may accept input at all. */

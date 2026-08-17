@@ -39,6 +39,7 @@ FEYTOL/
 │   ├── 03-m2-m4-catalog-report.md  content layer, catalog, PDF reconciliation
 │   ├── WORKING-LOCALLY.md          install Node, run the dev server, edit content
 │   ├── DEPLOY.md                   GitHub + Netlify, review URL then public
+│   ├── SELLING-ONLINE.md           the staged commerce plan + client checklist
 │   └── source/                     the client's own documents (source of truth)
 ├── previews/            ← single-file page previews. Open in any browser, no build needed.
 ├── tools/
@@ -50,6 +51,7 @@ FEYTOL/
 
 - **Working on this yourself?** → `docs/WORKING-LOCALLY.md`
 - **Getting it online?** → `docs/DEPLOY.md`
+- **Selling and taking payment?** → `docs/SELLING-ONLINE.md`
 
 ## Running it
 
@@ -97,7 +99,8 @@ gated on the client supplying manufacturer documentation:
 
 | Field | State | Unlocks when |
 |---|---|---|
-| `commerce.price` | must be null | pricing is approved for publication |
+| `commerce.price` | structured, or null | needs amount, currency, the unit it buys, exclusions, source and date (D26) |
+| `commerce.fulfilment` | required | `parcel` or `freight`; a freight item can never be sold online |
 | `safety.workingLoadLimit` | must be null | manufacturer documentation supplied |
 | `safety.breakingStrength` | must be null | manufacturer documentation supplied |
 | `safety.certifications` | must be empty | certificates supplied |
@@ -105,14 +108,19 @@ gated on the client supplying manufacturer documentation:
 
 ## Blocked on the client
 
-1. **Approved privacy notice** — blocks turning the quote form on. Delivery itself is
+1. **Prices, terms of sale and a returns policy** — blocks publishing prices (D26).
+   See `docs/SELLING-ONLINE.md` for the full checklist.
+2. **Approved privacy notice** — blocks turning the quote form on. Delivery itself is
    solved: the form is wired to Netlify Forms and `PUBLIC_QUOTE_DESTINATION=netlify`
    switches it on.
-2. **Real logo SVGs** — the mark is provisional. The one thing I would not launch without.
-3. **Manufacturer technical documentation** — the largest commercial gap.
-4. **Domain + DNS access** — set `PUBLIC_SITE_URL` and flip `PUBLIC_SITE_STAGE=live`.
-5. **Product photography** — placeholders are deliberate, but photos would lift the catalog most.
-6. Verified contact details · SKUs and MOQ · shipping and returns policy · social URLs.
+3. **A vector logo** — the real mark is installed as a PNG; a vector would fix the
+   favicon, header crispness and allow a proper horizontal lockup.
+4. **Confirmed shipping weights** — now blocking, not cosmetic: checkout cannot
+   price delivery without them.
+5. **Manufacturer technical documentation** — breaking strengths remain withheld.
+6. **Domain + DNS access** — set `PUBLIC_SITE_URL` and flip `PUBLIC_SITE_STAGE=live`.
+7. **Photography for the Grade 43 chain** — the other three now have real photos.
+8. Verified contact details · SKUs and MOQ · social URLs.
 
 ## Deploying
 
