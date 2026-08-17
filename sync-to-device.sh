@@ -28,7 +28,7 @@ STAGE="$(mktemp -d)"
 mkdir -p "$STAGE/FEYTOL"
 tar -C "$ROOT" \
     --exclude=node_modules --exclude=dist --exclude=.astro \
-    --exclude=package-lock.json --exclude='*.zip' \
+    --exclude='*.zip' \
     -cf - . | tar -C "$STAGE/FEYTOL" -xf -
 rm -f "$OUT"
 ( cd "$STAGE" && zip -qr "$OUT" FEYTOL )
