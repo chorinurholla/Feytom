@@ -46,4 +46,10 @@ echo
 echo "  unzip -q -o sync.zip -d \$HOME/unpack"
 echo "  cd \$HOME/mnt/FEYTOL"
 echo "  (cd \$HOME/unpack/FEYTOL && find . -type d) | while read -r d; do mkdir -p \"./\$d\"; done"
-echo "  (cd \$HOME/unpack/FEYTOL && find . -type f) | while read -r f; do cp \"\$HOME/unpack/FEYTOL/\$f\" \"./\$f\"; done"
+echo "  (cd \$HOME/unpack/FEYTOL && find . -type f) | while read -r f; do \\"
+echo "    [ -e \"./\$f\" ] && chmod u+w \"./\$f\" 2>/dev/null || true; \\"
+echo "    cp \"\$HOME/unpack/FEYTOL/\$f\" \"./\$f\"; \\"
+echo "    chmod --reference=\"\$HOME/unpack/FEYTOL/\$f\" \"./\$f\" 2>/dev/null || true; done"
+echo
+echo "The chmod is required: git pack files are mode 444, and cp cannot open a"
+echo "read-only destination on a mount that also forbids unlink."
